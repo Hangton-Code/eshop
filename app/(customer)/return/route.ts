@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+
+import { stripe } from "@/lib/stripe";
 import { getOrdersByPaymentId, getProductById } from "@/lib/db/queries";
 import { CartItem, Order, Product } from "@/db/schema";
 import { db } from "@/db";
@@ -6,7 +8,6 @@ import { and, eq, inArray } from "drizzle-orm";
 import { NextRequest } from "next/server";
 import { redisClient } from "@/lib/redis";
 import { Attachment } from "ai";
-import Stripe from "stripe";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -15,7 +16,6 @@ export async function GET(request: NextRequest) {
   if (!session_id)
     throw new Error("Please provide a valid session_id (`cs_test_...`)");
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   const data = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ["line_items", "payment_intent"],
   });
