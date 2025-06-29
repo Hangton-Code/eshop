@@ -1,12 +1,10 @@
-import { confidentialEnv } from "../env";
-
 export async function getEmbeddings(text: string) {
   const response = await fetch(
     "https://dashscope.aliyuncs.com/compatible-mode/v1/embeddings",
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${confidentialEnv.ALIYUN_KEY}`,
+        Authorization: `Bearer ${process.env.ALIYUN_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

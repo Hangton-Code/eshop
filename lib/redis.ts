@@ -1,5 +1,4 @@
 import { Redis } from "ioredis";
-import { confidentialEnv } from "./env";
 
 declare global {
   var redis: Redis | undefined;
@@ -8,13 +7,13 @@ declare global {
 let redis: Redis;
 
 if (process.env.NODE_ENV === "production") {
-  redis = new Redis(confidentialEnv.REDIS_URL, {
-    password: confidentialEnv.REDIS_PASSWORD,
+  redis = new Redis(process.env.REDIS_URL!, {
+    password: process.env.REDIS_PASSWORD,
   });
 } else {
   if (!global.redis) {
-    global.redis = new Redis(confidentialEnv.REDIS_URL, {
-      password: confidentialEnv.REDIS_PASSWORD,
+    global.redis = new Redis(process.env.REDIS_URL!, {
+      password: process.env.REDIS_PASSWORD,
     });
 
     // Optional: Add error logging for development
