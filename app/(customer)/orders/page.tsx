@@ -28,7 +28,7 @@ export default async function MyOrdersPage() {
   }, {} as { [key: string]: Merchant });
 
   return (
-    <div className="flex h-screen pt-25 flex-col w-full max-w-[1000px] space-y-8 mx-auto px-10 max-md:pt-20 max-md:px-5">
+    <div className="flex pb-25 pt-25  flex-col w-full max-w-[1000px] space-y-8 mx-auto px-10 max-md:pt-20 max-md:px-5">
       <div className="px-4 lg:px-6 space-y-1">
         <h1 className="text-2xl font-bold">My Orders</h1>
         <p className="text-sm text-muted-foreground">
@@ -63,22 +63,22 @@ export default async function MyOrdersPage() {
               : ""}
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="ORDERED" className="mt-2">
+        <TabsContent value="ORDERED" className="mt-2 space-y-2">
           {ordersByStatus.ORDERED?.map((order) => (
             <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
         </TabsContent>
-        <TabsContent value="SHIPPED">
+        <TabsContent value="SHIPPED" className="mt-2 space-y-2">
           {ordersByStatus.SHIPPED?.map((order) => (
             <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
         </TabsContent>
-        <TabsContent value="DELIVERED">
+        <TabsContent value="DELIVERED" className="mt-2 space-y-2">
           {ordersByStatus.DELIVERED?.map((order) => (
             <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
         </TabsContent>
-        <TabsContent value="CANCELED">
+        <TabsContent value="CANCELED" className="mt-2 space-y-2">
           {ordersByStatus.CANCELED?.map((order) => (
             <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
