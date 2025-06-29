@@ -1,12 +1,11 @@
 "use server";
 
 import { headers } from "next/headers";
-
-import { stripe } from "@/lib/stripe";
 import { auth } from "@clerk/nextjs/server";
 import { getCartItems } from "./cart";
 import { Attachment } from "ai";
 import { redisClient } from "@/lib/redis";
+import Stripe from "stripe";
 
 export async function fetchClientSecret() {
   const origin = (await headers()).get("origin");
@@ -19,6 +18,7 @@ export async function fetchClientSecret() {
   const cartItems = await getCartItems();
 
   // Create Checkout Sessions from body params.
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   const session = await stripe.checkout.sessions.create({
     ui_mode: "embedded",
     line_items: cartItems.map((item) => ({
