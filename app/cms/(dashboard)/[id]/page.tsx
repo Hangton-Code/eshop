@@ -7,9 +7,7 @@ import { OverviewPageContent } from "./content";
 export default async function OverviewPage({
   params,
 }: {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
 

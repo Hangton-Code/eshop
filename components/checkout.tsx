@@ -17,6 +17,7 @@ export default function Checkout() {
     <div id="checkout" className="pt-18 h-screen">
       <EmbeddedCheckoutProvider
         stripe={stripePromise}
+        // @ts-ignore
         options={{ fetchClientSecret }}
       >
         <EmbeddedCheckout />

@@ -104,7 +104,7 @@ export async function getChatsByUserId({
       chats: hasMore ? filteredChats.slice(0, limit) : filteredChats,
       hasMore,
     };
-  } catch (error) {
+  } catch {
     throw new Error(
       `bad_request:database
       Failed to get chats by user id`

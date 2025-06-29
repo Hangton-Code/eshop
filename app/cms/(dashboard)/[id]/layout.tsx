@@ -1,7 +1,6 @@
 import { DashboardSidebar } from "@/components/cms/dashboard-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getMerchantsByUserId } from "@/lib/db/queries";
-import { convertToActualPathInCMS } from "@/lib/utils";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 export default async function CMSDashboardLayout({
@@ -9,7 +8,7 @@ export default async function CMSDashboardLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }>) {
   const { id } = await params;
   const { userId } = await auth();

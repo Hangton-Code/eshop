@@ -9,7 +9,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 
 import {
@@ -76,7 +75,7 @@ export function EditOrderSheet({ order, open, setOpen }: EditOrderSheetProps) {
 
       setOpen(false);
       mutate("orders");
-    } catch (error) {
+    } catch {
       toast.error("Failed to edit order");
     }
   };

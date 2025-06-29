@@ -11,16 +11,6 @@ import {
   useSensors,
   type UniqueIdentifier,
 } from "@dnd-kit/core";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,7 +21,6 @@ import {
 } from "@/components/ui/hover-card";
 import {
   SortableContext,
-  arrayMove,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
@@ -347,7 +336,6 @@ function MyRow({ row }: { row: Row<Order> }) {
 
 export function OrderTable({
   data,
-  merchantId,
 }: {
   data: (Order & { product?: Product })[];
   merchantId: string;

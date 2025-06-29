@@ -1,9 +1,7 @@
-import { Merchant, Order, ProductDetails } from "@/db/schema";
+import { Merchant, Order } from "@/db/schema";
 import { getMerchantsByIds, getOrdersByCustomerId } from "@/lib/db/queries";
 import { auth } from "@clerk/nextjs/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { OrderCard } from "@/components/order-card";
 
 export default async function MyOrdersPage() {
@@ -67,22 +65,22 @@ export default async function MyOrdersPage() {
         </TabsList>
         <TabsContent value="ORDERED" className="mt-2">
           {ordersByStatus.ORDERED?.map((order) => (
-            <OrderCard order={order} merchantMap={merchantMap} />
+            <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
         </TabsContent>
         <TabsContent value="SHIPPED">
           {ordersByStatus.SHIPPED?.map((order) => (
-            <OrderCard order={order} merchantMap={merchantMap} />
+            <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
         </TabsContent>
         <TabsContent value="DELIVERED">
           {ordersByStatus.DELIVERED?.map((order) => (
-            <OrderCard order={order} merchantMap={merchantMap} />
+            <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
         </TabsContent>
         <TabsContent value="CANCELED">
           {ordersByStatus.CANCELED?.map((order) => (
-            <OrderCard order={order} merchantMap={merchantMap} />
+            <OrderCard key={order.id} order={order} merchantMap={merchantMap} />
           ))}
         </TabsContent>
       </Tabs>

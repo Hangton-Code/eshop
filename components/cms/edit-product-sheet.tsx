@@ -9,15 +9,13 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
-import { Plus, PlusIcon, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { CategoryCombobox } from "./category-combobox";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
-import { ScrollArea } from "../ui/scroll-area";
 import { toast } from "sonner";
 import { Attachment } from "ai";
 import { PreviewAttachment } from "../preview-attachment";
@@ -79,7 +77,7 @@ export function EditProductSheet({
       }
       const { error } = await response.json();
       toast.error(error);
-    } catch (error) {
+    } catch {
       toast.error("Failed to upload file, please try again!");
     }
   };
@@ -259,11 +257,8 @@ export function EditProductSheet({
               className="flex flex-row gap-2 items-end w-full overflow-x-auto"
             >
               {covers.map((attachment) => (
-                <div className="relative">
-                  <PreviewAttachment
-                    key={attachment.url}
-                    attachment={attachment}
-                  />
+                <div className="relative" key={attachment.url}>
+                  <PreviewAttachment attachment={attachment} />
                   <Button
                     variant="outline"
                     size="icon"

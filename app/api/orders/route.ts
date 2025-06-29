@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import {
   getMerchantById,
-  getOrderById,
   getOrdersByMerchantId as getOrdersByMerchantIdFromDB,
 } from "@/lib/db/queries";
 import { auth } from "@clerk/nextjs/server";

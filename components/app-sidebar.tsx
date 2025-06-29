@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { NavUser } from "./nav-user";
 
 export function AppSidebar() {

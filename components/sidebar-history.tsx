@@ -25,7 +25,6 @@ import type { Chat } from "@/db/schema";
 import { ChatItem } from "./sidebar-history-item";
 import useSWRInfinite, { unstable_serialize } from "swr/infinite";
 import { LoaderIcon } from "lucide-react";
-import { User } from "@clerk/nextjs/server";
 import { useSWRConfig } from "swr";
 
 type GroupedChats = {

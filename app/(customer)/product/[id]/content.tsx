@@ -33,7 +33,6 @@ import { useSWRConfig } from "swr";
 import { cn } from "@/lib/utils";
 
 export function ProductPageContent({
-  id,
   product,
   merchant,
 }: {
@@ -65,7 +64,7 @@ export function ProductPageContent({
                 className="hover:cursor-pointer"
                 onClick={() => router.back()}
               >
-                Results of "{decodeURIComponent(query)}"
+                Results of &quot;{decodeURIComponent(query)}&quot;
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -172,7 +171,7 @@ export function ProductPageContent({
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-medium">
-                      Shop's Inventory
+                      Shop&apos;s Inventory
                     </TableCell>
                     <TableCell>{product.inventory}</TableCell>
                   </TableRow>

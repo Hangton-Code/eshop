@@ -56,7 +56,7 @@ export default function ProfileManagementPageContent({
       }
       const { error } = await response.json();
       toast.error(error);
-    } catch (error) {
+    } catch {
       toast.error("Failed to upload file, please try again!");
     }
   };
@@ -77,7 +77,7 @@ export default function ProfileManagementPageContent({
         }
       : null
   );
-  const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
+  const [, setUploadQueue] = useState<Array<string>>([]);
 
   const handleFileChange = useCallback(
     async (

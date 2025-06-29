@@ -1,13 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { stripe } from "@/lib/stripe";
-import {
-  getCartItemsByIds,
-  getOrdersByPaymentId,
-  getProductById,
-} from "@/lib/db/queries";
-import Stripe from "stripe";
-import { auth } from "@clerk/nextjs/server";
+import { getOrdersByPaymentId, getProductById } from "@/lib/db/queries";
 import { CartItem, Order, Product } from "@/db/schema";
 import { db } from "@/db";
 import { and, eq, inArray } from "drizzle-orm";

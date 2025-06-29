@@ -18,7 +18,7 @@ import {
   removeItemFromCart,
   updateQuantity,
 } from "@/actions/cart";
-import { Plus, ShoppingCart, SquareChartGantt, Trash } from "lucide-react";
+import { ShoppingCart, SquareChartGantt, Trash } from "lucide-react";
 import { Attachment } from "ai";
 import Link from "next/link";
 import { useState } from "react";

@@ -16,7 +16,11 @@ function convertToUIMessages(messages: Array<Message>): Array<UIMessage> {
   }));
 }
 
-export default async function ChatPage({ params }: { params: { id: string } }) {
+export default async function ChatPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const { userId } = await auth();
 

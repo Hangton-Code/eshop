@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useSidebar } from "@/components/ui/sidebar";
-import { cn, sanitizeText } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
 import { getChatHistoryPaginationKey } from "@/components/sidebar-history";

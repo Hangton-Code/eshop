@@ -1,15 +1,12 @@
 import { cn, sanitizeText } from "@/lib/utils";
 import { UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight, SparklesIcon, SquareChartGantt } from "lucide-react";
+import { SparklesIcon, SquareChartGantt } from "lucide-react";
 import { Markdown } from "./markdown";
 import { PreviewAttachment } from "./preview-attachment";
 import { MessageReasoning } from "./message-reasoning";
 import cx from "classnames";
 import { z } from "zod";
-import { Button } from "./ui/button";
-import { RainbowButton } from "./magicui/rainbow-button";
-import { ShimmerButton } from "./magicui/shimmer-button";
 import { InteractiveHoverButton } from "./magicui/interactive-hover-button";
 import { useRouter } from "next/navigation";
 

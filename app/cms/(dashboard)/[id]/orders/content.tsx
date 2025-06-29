@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { OrderTable } from "@/components/cms/order-table";
 import { productsFetcher } from "../products/content";
 import { Order } from "@/db/schema";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 const ordersFetcher = (id: string) => async (key: string) => {
   if (key === "orders") {

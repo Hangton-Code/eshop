@@ -65,7 +65,7 @@ export function CreateShopSheet({
       }
       const { error } = await response.json();
       toast.error(error);
-    } catch (error) {
+    } catch {
       toast.error("Failed to upload file, please try again!");
     }
   };
@@ -74,7 +74,7 @@ export function CreateShopSheet({
   const bannerPictureInputRef = useRef<HTMLInputElement>(null);
   const [profilePicture, setProfilePicture] = useState<Attachment>();
   const [bannerPicture, setBannerPicture] = useState<Attachment>();
-  const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
+  const [, setUploadQueue] = useState<Array<string>>([]);
 
   const handleFileChange = useCallback(
     async (

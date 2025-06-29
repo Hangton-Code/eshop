@@ -19,7 +19,6 @@ import {
 import { TrendingDownIcon, TrendingUpIcon } from "lucide-react";
 
 export function OverviewPageContent({
-  id,
   revenue,
   customerCount,
 }: {
@@ -53,9 +52,9 @@ export function OverviewPageContent({
       </div>
 
       <div className="px-4 lg:px-6 space-y-1">
-        <h1 className="text-2xl font-bold">Shop's Overview</h1>
+        <h1 className="text-2xl font-bold">Shop&apos;s Overview</h1>
         <p className="text-sm text-muted-foreground">
-          Here are some of your shop's overview.
+          Here are some of your shop&apos;s overview.
         </p>
       </div>
 

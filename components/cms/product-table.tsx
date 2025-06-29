@@ -24,7 +24,6 @@ import {
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   SortableContext,
-  arrayMove,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";

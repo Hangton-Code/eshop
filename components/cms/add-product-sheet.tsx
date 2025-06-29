@@ -17,13 +17,11 @@ import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { CategoryCombobox } from "./category-combobox";
 import { ChangeEvent, useCallback, useRef, useState } from "react";
-import { ScrollArea } from "../ui/scroll-area";
 import { toast } from "sonner";
 import { Attachment } from "ai";
 import { PreviewAttachment } from "../preview-attachment";
 import { addProduct } from "@/actions/cms/products";
 import { addProductSchema } from "@/actions/cms/schemas";
-import { Product } from "@/db/schema";
 
 type AddProductSheetProps = {
   merchantId: string;
@@ -79,7 +77,7 @@ export function AddProductSheet({
       toast.error(error);
 
       setOpen(false);
-    } catch (error) {
+    } catch {
       toast.error("Failed to upload file, please try again!");
     }
   };
@@ -155,7 +153,7 @@ export function AddProductSheet({
 
       setOpen(false);
       refresh();
-    } catch (error) {
+    } catch {
       toast.error("Failed to add product");
     }
   };
@@ -271,7 +269,7 @@ export function AddProductSheet({
               className="flex flex-row gap-2 items-end w-full overflow-x-auto"
             >
               {covers.map((attachment) => (
-                <div className="relative">
+                <div className="relative" key={attachment.url}>
                   <PreviewAttachment
                     key={attachment.url}
                     attachment={attachment}

@@ -3,19 +3,14 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  CreateShopInHome,
-  CreateShopSheet,
-} from "@/components/cms/create-shop-sheet";
+import { CreateShopInHome } from "@/components/cms/create-shop-sheet";
 import { myDayJS } from "@/lib/dayjs";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
