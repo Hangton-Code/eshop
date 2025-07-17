@@ -104,6 +104,7 @@ export function ChatForm({
   );
 
   const submitForm = useCallback(() => {
+    if (!textInput.trim()) return;
     {
       handleSubmit(
         undefined,
@@ -193,7 +194,7 @@ export function ChatForm({
         <Button
           className="rounded-full w-10 h-10 p-0 flex justify-center items-center"
           variant={"secondary"}
-          onClick={handleSubmit}
+          onClick={submitForm}
           disabled={status === "streaming" || status === "submitted"}
         >
           <ArrowUp />

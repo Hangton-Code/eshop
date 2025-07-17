@@ -9,6 +9,7 @@ import cx from "classnames";
 import { z } from "zod";
 import { InteractiveHoverButton } from "./magicui/interactive-hover-button";
 import { useRouter } from "next/navigation";
+import { Ripples } from "./icons/ripples";
 
 const ProductDisplay = z.object({
   id: z.string(),
@@ -76,6 +77,7 @@ export function Message({
 
             {message.parts?.map((part, index) => {
               const { type } = part;
+
               const key = `message-${message.id}-part-${index}`;
 
               if (type === "reasoning") {
@@ -106,6 +108,20 @@ export function Message({
 
               if (type === "tool-invocation") {
                 const tool = part.toolInvocation;
+
+                if (tool.toolName === "searchProducts") {
+                  const isSearching = message.parts.length - 1 === index;
+                  if (!isSearching) return <></>;
+                  return (
+                    <motion.div
+                      className="relative w-fit border py-3 px-4  rounded-xl flex gap-3"
+                      initial={{ y: 5, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                    >
+                      <Ripples className="w-5" /> Searching Products
+                    </motion.div>
+                  );
+                }
                 if (tool.toolName === "showFoundProducts") {
                   return (
                     <div key={index} className="space-y-2">

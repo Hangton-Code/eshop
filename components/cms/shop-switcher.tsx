@@ -22,19 +22,17 @@ import { CreateShopSheet } from "./create-shop-sheet";
 
 export function ShopSwitcher({
   shops,
+  activeShopId,
 }: {
   shops: {
     name: string;
     profilePictureUrl: string | null;
     id: string;
   }[];
+  activeShopId: string;
 }) {
   const { isMobile } = useSidebar();
-  const [activeShop, setActiveShop] = React.useState(shops[0]);
-
-  if (!activeShop) {
-    return null;
-  }
+  const activeShop = shops.filter((item) => item.id === activeShopId)[0];
 
   const [createShopSheetOpen, setCreateShopSheetOpen] = React.useState(false);
 
@@ -78,19 +76,14 @@ export function ShopSwitcher({
                 Your Shops
               </DropdownMenuLabel>
               {shops.map((shop, index) => (
-                <DropdownMenuItem
-                  key={shop.name}
-                  onClick={() => setActiveShop(shop)}
-                  className="gap-2 p-2"
-                  asChild
-                >
+                <DropdownMenuItem key={shop.name} className="gap-2 p-2" asChild>
                   <Link href={`/cms/${shop.id}`}>
                     <div className="flex size-6 items-center justify-center rounded-sm border">
-                      {activeShop.profilePictureUrl ? (
+                      {shop.profilePictureUrl ? (
                         <img
                           className="w-full h-full"
-                          src={activeShop.profilePictureUrl}
-                          alt={activeShop.name}
+                          src={shop.profilePictureUrl}
+                          alt={shop.name}
                         />
                       ) : (
                         <Building2 className="w-[80%] aspect-square" />

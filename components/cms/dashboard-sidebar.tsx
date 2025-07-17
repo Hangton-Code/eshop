@@ -61,7 +61,7 @@ export function DashboardSidebar({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <ShopSwitcher shops={shops} />
+            <ShopSwitcher shops={shops} activeShopId={merchantId} />
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
