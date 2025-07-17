@@ -114,6 +114,7 @@ export function Message({
                   if (!isSearching) return <></>;
                   return (
                     <motion.div
+                      key={index}
                       className="relative w-fit border py-3 px-4  rounded-xl flex gap-3"
                       initial={{ y: 5, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
