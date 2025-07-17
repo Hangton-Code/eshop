@@ -1,0 +1,39 @@
+services:
+  eshop-redis:
+    image: redis:alpine
+    container_name: eshop-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - /root/data/eshop/redis:/data
+    restart: always
+    networks:
+      - reverseproxy
+    command:
+      redis-server --requirepass {REDIS_PASSWORD}
+  eshop-app:
+    build: 
+      context: src
+    restart: always
+    networks:
+      - reverseproxy
+    container_name: eshop-app
+    environment:
+      - DATABASE_URL=
+      - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+      - CLERK_SECRET_KEY=
+      - BLOB_READ_WRITE_TOKEN=
+      - DEEPSEEK_API_KEY=
+      - GROK_API_KEY=
+      - OPENROUTER_API_KEY=
+      - ALIYUN_KEY=
+      - STRIPE_SECRET_KEY=
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+      - REDIS_URL=
+      - REDIS_PASSWORD=
+      - NEXT_PUBLIC_APP_ORIGIN=
+    depends_on:
+      - eshop-redis
+networks:
+  reverseproxy:
+    external: true
