@@ -257,8 +257,8 @@ export async function getCartItemsByIds(cartItemIds: string[]) {
     .where(inArray(CartItem.id, cartItemIds));
 }
 
-export async function getOrdersByMerchantId(merchantId: string) {
-  return await db.select().from(Order).innerJoin(Merchant, eq(Order.merchantId, Merchant.id)).where(eq(Merchant.id, merchantId)).orderBy(desc(Order.createdAt));
+export async function getOrdersByMerchantId(merchantId: string, userId: string) {
+  return await db.select().from(Order).innerJoin(Merchant, eq(Order.merchantId, Merchant.id)).where(and(eq(Merchant.id, merchantId), eq(Merchant.userId, userId))).orderBy(desc(Order.createdAt));
 }
 
 export async function getOrderById(orderId: number, userId: string) {

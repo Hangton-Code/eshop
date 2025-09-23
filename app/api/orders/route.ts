@@ -13,9 +13,10 @@ export async function GET(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const orders = await getOrdersByMerchantIdFromDB(merchantId);
+  const orders = await getOrdersByMerchantIdFromDB(merchantId, userId);
   if (orders.length === 0) throw new Error("Orders not found");
-  if (orders[0].Merchant.userId !== userId) throw new Error("Unauthorized");
 
-  return Response.json(orders);
+  return Response.json(orders.map((order) => ({
+    ...order,
+  })));
 }
