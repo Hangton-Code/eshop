@@ -253,7 +253,7 @@ export async function getCartItemsByIds(cartItemIds: string[]) {
 }
 
 export async function getOrdersByMerchantId(merchantId: string) {
-  return await db.select().from(Order).where(eq(Order.merchantId, merchantId));
+  return await db.select().from(Order).innerJoin(Merchant, eq(Order.merchantId, Merchant.id)).where(eq(Merchant.id, merchantId)).orderBy(desc(Order.createdAt));
 }
 
 export async function getOrderById(orderId: number, userId: string) {

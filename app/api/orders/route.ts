@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import {
-  getMerchantById,
   getOrdersByMerchantId as getOrdersByMerchantIdFromDB,
 } from "@/lib/db/queries";
 import { auth } from "@clerk/nextjs/server";
@@ -14,9 +13,9 @@ export async function GET(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const merchant = await getMerchantById(merchantId);
-  if (!merchant || merchant.userId !== userId)
-    throw new Error("Merchant not found");
+  const orders = await getOrdersByMerchantIdFromDB(merchantId);
+  if (orders.length === 0) throw new Error("Orders not found");
+  if (orders[0].Merchant.userId !== userId) throw new Error("Unauthorized");
 
-  return Response.json(await getOrdersByMerchantIdFromDB(merchantId));
+  return Response.json(orders);
 }

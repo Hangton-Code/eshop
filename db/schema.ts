@@ -107,7 +107,7 @@ export const Order = pgTable("Order", {
   receiverName: varchar("receiver_name", { length: 255 }).notNull(),
   deliveryCode: varchar("delivery_code", { length: 255 }),
   stripePaymentId: varchar("stripe_payment_id", { length: 255 }),
-});
+}, (table) => [index("merchant_id_index").on(table.merchantId), index("customer_id_index").on(table.customerId)]);
 
 export type ProductDetails = {
   name: string;
