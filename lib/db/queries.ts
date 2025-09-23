@@ -37,6 +37,11 @@ export async function saveMessages(messages: Array<Message>) {
   return await db.insert(Message).values(messages);
 }
 
+export async function getMerchantById(id: string) {
+  const merchant = await db.select().from(Merchant).where(eq(Merchant.id, id))
+  return merchant.length > 0 ? merchant[0] : null;
+}
+
 export async function getChatsByUserId({
   id,
   limit,
