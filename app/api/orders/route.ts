@@ -17,6 +17,6 @@ export async function GET(req: NextRequest) {
   if (orders.length === 0) throw new Error("Orders not found");
 
   return Response.json(orders.map((order) => ({
-    ...order,
+    ...order.Order,
   })));
 }
