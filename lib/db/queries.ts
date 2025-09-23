@@ -24,11 +24,12 @@ export async function getChatById(id: string) {
   return chat.length > 0 ? chat[0] : null;
 }
 
-export async function getMessagesByChatId(id: string) {
+export async function getMessages(id: string, userId: string) {
   return await db
     .select()
     .from(Message)
-    .where(eq(Message.chatId, id))
+    .innerJoin(Chat, eq(Message.chatId, Chat.id))
+    .where(and(eq(Message.chatId, id), eq(Chat.userId, userId)))
     .orderBy(asc(Message.createdAt));
 }
 
@@ -154,20 +155,6 @@ export async function getMerchantsByUserId(userId: string) {
   return db.select().from(Merchant).where(eq(Merchant.userId, userId));
 }
 
-export async function getMerchantById(id: string) {
-  const merchant = await redisClient.get(`merchant:${id}`);
-  if (merchant) {
-    return JSON.parse(merchant);
-  }
-
-  const merchantFromDB = (
-    await db.select().from(Merchant).where(eq(Merchant.id, id))
-  )[0];
-  await redisClient.set(`merchant:${id}`, JSON.stringify(merchantFromDB));
-
-  return merchantFromDB;
-}
-
 export function getProductsByMerchantId(merchantId: string) {
   return db
     .select()
@@ -183,17 +170,26 @@ export async function getProductById(id: string) {
   }
 
   const productFromDB = (
-    await db.select().from(Product).where(eq(Product.id, id))
+    await db.select().from(Product).innerJoin(Merchant, eq(Product.merchantId, Merchant.id)).where(eq(Product.id, id))
   )[0];
   await redisClient.set(
     `product:${id}`,
     JSON.stringify({
-      ...productFromDB,
-      embedding: [],
+      merchant: productFromDB.Merchant,
+      product: {
+        ...productFromDB.Product,
+        embedding: [],
+      },
     })
   );
 
-  return productFromDB;
+  return {
+    merchant: productFromDB.Merchant,
+    product: {
+      ...productFromDB.Product,
+      embedding: [],
+    },
+  };
 }
 
 export async function searchProductsByText(text: string) {
@@ -260,8 +256,8 @@ export async function getOrdersByMerchantId(merchantId: string) {
   return await db.select().from(Order).where(eq(Order.merchantId, merchantId));
 }
 
-export async function getOrderById(orderId: number) {
-  return (await db.select().from(Order).where(eq(Order.id, orderId)))[0];
+export async function getOrderById(orderId: number, userId: string) {
+  return (await db.select().from(Order).innerJoin(Merchant, eq(Order.merchantId, Merchant.id)).where(and(eq(Order.id, orderId), eq(Merchant.userId, userId))))[0];
 }
 
 export async function getOrdersByCustomerId(customerId: string) {

@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  getMerchantById,
   getOrderById,
   getOrdersByMerchantId as getOrdersByMerchantIdFromDB,
 } from "@/lib/db/queries";
@@ -17,14 +16,13 @@ export async function editOrder(body: z.infer<typeof editOrderSchema>) {
 
   const { userId } = await auth();
 
-  const order = await getOrderById(data.id);
-  if (!order) {
-    throw new Error("Order not found");
+  if (!userId) {
+    throw new Error("Unauthorized");
   }
 
-  const merchant = await getMerchantById(order.merchantId);
-  if (!merchant || merchant.userId !== userId) {
-    throw new Error("");
+  const order = await getOrderById(data.id, userId);
+  if (!order) {
+    throw new Error("Order not found");
   }
 
   await db

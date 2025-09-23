@@ -1,4 +1,4 @@
-import { getChatById, getMessagesByChatId } from "@/lib/db/queries";
+import { getChatById, getMessages } from "@/lib/db/queries";
 import { auth } from "@clerk/nextjs/server";
 import { Chat } from "./chat";
 import { Message } from "@/db/schema";
@@ -23,16 +23,16 @@ export default async function ChatPage({
 }) {
   const { id } = await params;
   const { userId } = await auth();
+  
+  if (!userId) return null;
 
-  const chat = await getChatById(id);
+  const messagesFromDb = await getMessages(id, userId);
 
-  if (chat && chat.userId !== userId) return null;
-
-  const messagesFromDb = await getMessagesByChatId(id);
+  if (messagesFromDb.length === 0) return null;
 
   return (
     <div className="flex h-screen pt-15 items-center justify-center mx-auto">
-      <Chat id={id} initialMessages={convertToUIMessages(messagesFromDb)} />
+      <Chat id={id} initialMessages={convertToUIMessages(messagesFromDb.map((message) => message.Message))} />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import {
   vector,
   unique,
   uniqueIndex,
+  index,
 } from "drizzle-orm/pg-core";
 
 export const Chat = pgTable("Chat", {
@@ -33,7 +34,7 @@ export const Message = pgTable("Message", {
   parts: json("parts").notNull(),
   attachments: json("attachments").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [index("chat_id_index").on(table.chatId)]);
 
 // CMS System
 
@@ -69,14 +70,12 @@ export const Product = pgTable(
     hidden: boolean("hidden").default(false),
     covers: json("covers").notNull(),
   },
-  (table) => {
-    return {
-      idMerchantIdUnique: unique("code_merchant_id_unique").on(
+  (table) => [unique("code_merchant_id_unique").on(
         table.code,
         table.merchantId
       ),
-    };
-  }
+      index("merchant_id_index").on(table.merchantId)
+    ]
 );
 
 export type Product = InferSelectModel<typeof Product>;
@@ -140,14 +139,13 @@ export const CartItem = pgTable(
     quantity: integer("quantity").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
-  (table) => {
-    return {
-      productUserUnique: uniqueIndex("product_user_unique").on(
+    (table) => [
+      unique("product_user_unique").on(
         table.productId,
         table.userId
       ),
-    };
-  }
+      index("user_id_index").on(table.userId)
+    ]
 );
 
 export type CartItem = InferSelectModel<typeof CartItem>;
