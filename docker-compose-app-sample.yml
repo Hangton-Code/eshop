@@ -9,10 +9,10 @@ services:
     restart: always
     networks:
       - reverseproxy
-    command:
-      redis-server --requirepass {REDIS_PASSWORD}
+    command: redis-server --requirepass {REDIS_PASSWORD}
   eshop-app:
-    build: 
+    build:
+      # clone the app in the subfolder src
       context: src
     restart: always
     networks:
