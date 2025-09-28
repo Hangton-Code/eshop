@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Attachment } from "ai";
 import { PreviewAttachment } from "./preview-attachment";
 import { cn } from "@/lib/utils";
+import { useRecaptcha } from "@/hooks/use-recaptcha";
 
 type ChatFormProps = {
   handleSubmit: any;
@@ -38,6 +39,7 @@ export function ChatForm({
   enableWebSearch,
   setEnableWebSearch,
 }: ChatFormProps) {
+  const { generateToken, isAvailable } = useRecaptcha();
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -53,6 +55,15 @@ export function ChatForm({
     formData.append("file", file);
 
     try {
+      let recaptchaToken = "";
+      if (isAvailable) {
+        recaptchaToken = await generateToken("file_upload");
+      }
+
+      if (recaptchaToken) {
+        formData.append("recaptchaToken", recaptchaToken);
+      }
+
       const response = await fetch("/api/files/upload", {
         method: "POST",
         body: formData,
@@ -103,9 +114,15 @@ export function ChatForm({
     [setAttachments]
   );
 
-  const submitForm = useCallback(() => {
+  const submitForm = useCallback(async () => {
     if (!textInput.trim()) return;
-    {
+
+    try {
+      let recaptchaToken = "";
+      if (isAvailable) {
+        recaptchaToken = await generateToken("chat_submit");
+      }
+
       handleSubmit(
         undefined,
         {
@@ -114,13 +131,17 @@ export function ChatForm({
         {
           body: {
             enableWebSearch,
+            recaptchaToken,
           },
         }
       );
 
       setAttachments([]);
+    } catch (error) {
+      console.error("reCAPTCHA verification failed:", error);
+      toast.error("Verification failed. Please try again.");
     }
-  }, [handleSubmit, attachments]);
+  }, [handleSubmit, attachments, generateToken, isAvailable, enableWebSearch]);
 
   return (
     <Card className="relative p-4 pb-3 w-full max-w-3xl flex flex-col gap-4">
@@ -158,7 +179,7 @@ export function ChatForm({
 
       <AutoResizeTextarea
         className="border-none outline-none bg-transparent w-full"
-        placeholder="What are the products that you want?"
+        placeholder="Ask me something"
         onKeyDown={handleKeyDown}
         onChange={(v) => setTextInput(v)}
         value={textInput}

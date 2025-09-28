@@ -175,6 +175,32 @@ export function Message({
                     </div>
                   );
                 }
+                // Tool handling disabled to fix echoing issue
+                // if (
+                //   tool.toolName === "provideSuggestedPrompts" &&
+                //   showSuggestedPrompts
+                // ) {
+                //   return (
+                //     <div key={index} className="space-y-2">
+                //       <div className="text-sm text-muted-foreground mb-2">
+                //         Suggested prompts:
+                //       </div>
+                //       {(tool.args.prompts as string[]).map(
+                //         (prompt, promptIndex) => (
+                //           <motion.button
+                //             key={promptIndex}
+                //             className="w-full text-left p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-sm"
+                //             onClick={() => onSuggestedPromptClick?.(prompt)}
+                //             initial={{ y: 5, opacity: 0 }}
+                //             animate={{ y: 0, opacity: 1 }}
+                //           >
+                //             {prompt}
+                //           </motion.button>
+                //         )
+                //       )}
+                //     </div>
+                //   );
+                // }
               }
             })}
           </div>

@@ -22,17 +22,21 @@ export default async function ChatPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
   const { userId } = await auth();
-  
+
   if (!userId) return null;
 
   const messagesFromDb = await getMessages(id, userId);
 
-  if (messagesFromDb.length === 0) return null;
-
   return (
     <div className="flex h-screen pt-15 items-center justify-center mx-auto">
-      <Chat id={id} initialMessages={convertToUIMessages(messagesFromDb.map((message) => message.Message))} />
+      <Chat
+        id={id}
+        initialMessages={convertToUIMessages(
+          messagesFromDb.map((message) => message.Message)
+        )}
+      />
     </div>
   );
 }

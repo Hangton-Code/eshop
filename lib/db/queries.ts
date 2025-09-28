@@ -38,7 +38,7 @@ export async function saveMessages(messages: Array<Message>) {
 }
 
 export async function getMerchantById(id: string) {
-  const merchant = await db.select().from(Merchant).where(eq(Merchant.id, id))
+  const merchant = await db.select().from(Merchant).where(eq(Merchant.id, id));
   return merchant.length > 0 ? merchant[0] : null;
 }
 
@@ -128,6 +128,35 @@ export async function deleteChatById(id: string) {
   return chatsDeleted;
 }
 
+export async function deleteAllChatsByUserId(userId: string) {
+  // First, get all chat IDs for the user
+  const userChats = await db
+    .select({ id: Chat.id })
+    .from(Chat)
+    .where(eq(Chat.userId, userId));
+
+  if (userChats.length === 0) {
+    return { deletedChats: 0, deletedMessages: 0 };
+  }
+
+  const chatIds = userChats.map((chat) => chat.id);
+
+  // Delete all messages for these chats
+  const deletedMessagesResult = await db
+    .delete(Message)
+    .where(inArray(Message.chatId, chatIds));
+
+  // Delete all chats for the user
+  const deletedChatsResult = await db
+    .delete(Chat)
+    .where(eq(Chat.userId, userId));
+
+  return {
+    deletedChats: deletedChatsResult.rowCount || 0,
+    deletedMessages: deletedMessagesResult.rowCount || 0,
+  };
+}
+
 export async function createChat(id: string, initialMessage: UIMessage) {
   try {
     const { userId } = await auth();
@@ -175,7 +204,11 @@ export async function getProductById(id: string) {
   }
 
   const productFromDB = (
-    await db.select().from(Product).innerJoin(Merchant, eq(Product.merchantId, Merchant.id)).where(eq(Product.id, id))
+    await db
+      .select()
+      .from(Product)
+      .innerJoin(Merchant, eq(Product.merchantId, Merchant.id))
+      .where(eq(Product.id, id))
   )[0];
   await redisClient.set(
     `product:${id}`,
@@ -195,6 +228,39 @@ export async function getProductById(id: string) {
       embedding: [],
     },
   };
+}
+
+export async function getProductsForExplore(
+  limit: number = 20,
+  offset: number = 0
+) {
+  const products = await db
+    .select({
+      id: Product.id,
+      name: Product.name,
+      price: Product.price,
+      brand: Product.brand,
+      covers: Product.covers,
+      merchantId: Product.merchantId,
+      merchantName: Merchant.name,
+    })
+    .from(Product)
+    .innerJoin(Merchant, eq(Product.merchantId, Merchant.id))
+    .where(eq(Product.hidden, false))
+    .orderBy(desc(Product.createdAt))
+    .limit(limit)
+    .offset(offset);
+
+  return products;
+}
+
+export async function getTotalProductCount() {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(Product)
+    .where(eq(Product.hidden, false));
+
+  return result[0].count;
 }
 
 export async function searchProductsByText(text: string) {
@@ -257,12 +323,26 @@ export async function getCartItemsByIds(cartItemIds: string[]) {
     .where(inArray(CartItem.id, cartItemIds));
 }
 
-export async function getOrdersByMerchantId(merchantId: string, userId: string) {
-  return await db.select().from(Order).innerJoin(Merchant, eq(Order.merchantId, Merchant.id)).where(and(eq(Merchant.id, merchantId), eq(Merchant.userId, userId))).orderBy(desc(Order.createdAt));
+export async function getOrdersByMerchantId(
+  merchantId: string,
+  userId: string
+) {
+  return await db
+    .select()
+    .from(Order)
+    .innerJoin(Merchant, eq(Order.merchantId, Merchant.id))
+    .where(and(eq(Merchant.id, merchantId), eq(Merchant.userId, userId)))
+    .orderBy(desc(Order.createdAt));
 }
 
 export async function getOrderById(orderId: number, userId: string) {
-  return (await db.select().from(Order).innerJoin(Merchant, eq(Order.merchantId, Merchant.id)).where(and(eq(Order.id, orderId), eq(Merchant.userId, userId))))[0];
+  return (
+    await db
+      .select()
+      .from(Order)
+      .innerJoin(Merchant, eq(Order.merchantId, Merchant.id))
+      .where(and(eq(Order.id, orderId), eq(Merchant.userId, userId)))
+  )[0];
 }
 
 export async function getOrdersByCustomerId(customerId: string) {
