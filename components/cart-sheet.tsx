@@ -57,7 +57,7 @@ export function CartSheet() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="hidden sm:flex relative">
+        <Button variant="ghost" size="icon" className="flex relative">
           <ShoppingCart width={26} />
           {(cart?.length ?? 0) > 0 && (
             <div className="absolute flex justify-center items-center top-0.5 right-0.5 w-3.5 h-3.5 bg-red-600 text-white text-xs rounded-full">

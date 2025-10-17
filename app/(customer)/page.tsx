@@ -33,7 +33,13 @@ export default function Home() {
         tabValue === "chat" ? `flex justify-center flex-col` : "py-30"
       )}
     >
-      <div className="flex flex-col items-center gap-8 mb-12">
+      <div
+        className={cn(
+          tabValue === "chat"
+            ? "flex flex-col items-center gap-8 mb-12"
+            : "hidden"
+        )}
+      >
         <div className="flex items-center gap-2 select-none">
           <ScanLine className="w-9 h-9" />
           <h1 className="text-4xl font-medium underline underline-offset-4 decoration-dotted">

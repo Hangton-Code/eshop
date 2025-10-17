@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, WalletMinimal } from "lucide-react";
 import { SidebarHistory } from "@/components/sidebar-history";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,17 @@ import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useUser } from "@clerk/nextjs";
 import { NavUser } from "./nav-user";
+import { SidebarSecondary } from "./sidebar-secondary";
+
+const data = {
+  sidebarSecondary: [
+    {
+      title: "My Orders",
+      url: "/orders",
+      icon: WalletMinimal,
+    },
+  ],
+};
 
 export function AppSidebar() {
   const router = useRouter();
@@ -73,7 +84,9 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarHistory userId={user.user?.id || null} />
+        <SidebarSecondary />
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser user={userObj} />
       </SidebarFooter>

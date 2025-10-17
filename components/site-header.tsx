@@ -14,12 +14,6 @@ import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
 import { CartSheet } from "./cart-sheet";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
 export function SiteHeader() {
   const { isMobile } = useSidebar();
   const router = useRouter();
@@ -28,7 +22,7 @@ export function SiteHeader() {
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    router.push(`/search/${searchQuery}`);
+    router.push(`/chat/${searchQuery}`);
   };
 
   return (
@@ -64,7 +58,7 @@ export function SiteHeader() {
             <form onSubmit={handleSearch}>
               <Input
                 className="w-full shadow-none"
-                placeholder="🔍 Search Products"
+                placeholder="🔍 Perform Traditional Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -75,7 +69,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 xl:gap-3">
           <CartSheet />
 
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant={"ghost"}
@@ -88,13 +82,13 @@ export function SiteHeader() {
             <TooltipContent>
               <p>View Orders</p>
             </TooltipContent>
-          </Tooltip>
+          </Tooltip> */}
 
           <Separator
             orientation="vertical"
-            className="mx-2 data-[orientation=vertical]:h-4"
+            className="mx-2 data-[orientation=vertical]:h-4 max-md:hidden"
           />
-          <div className="mx-2 flex items-center">
+          <div className="mx-2 flex items-center max-md:hidden">
             <SignedOut>
               <SignInButton />
             </SignedOut>

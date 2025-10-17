@@ -111,7 +111,7 @@ export function Message({
 
                 if (tool.toolName === "searchProducts") {
                   const isSearching = message.parts.length - 1 === index;
-                  if (!isSearching) return <></>;
+                  if (!isSearching) return <div key={index}></div>;
                   return (
                     <motion.div
                       key={index}

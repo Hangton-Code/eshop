@@ -80,7 +80,7 @@ export default function ProductCard({
             </p>
           </div>
           <div className="flex items-center gap-1">
-            <Button onClick={handleAddToCart}>
+            <Button size="sm" onClick={handleAddToCart}>
               Add to
               <ShoppingCart />{" "}
             </Button>
