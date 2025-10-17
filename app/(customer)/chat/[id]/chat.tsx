@@ -23,11 +23,14 @@ export function Chat({ id, initialMessages }: ChatProps) {
   const searchParams = useSearchParams();
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
-  const [enableWebSearch, setEnableWebSearch] = useState<boolean>(
+  const [enableWebSearch, _setEnableWebSearch] = useState<boolean>(
     searchParams.get("enableWebSearch") === "true"
   );
+  const [model, _setModel] = useState(
+    searchParams.get("model") ?? "google/gemini-2.5-flash"
+  );
 
-  const { messages, input, setInput, append, handleSubmit, status } = useChat({
+  const { messages, input, setInput, append, status } = useChat({
     id,
     initialMessages,
   });
@@ -45,13 +48,14 @@ export function Chat({ id, initialMessages }: ChatProps) {
 
   const router = useRouter();
 
-  // check for searchparams
+  // initial prompt
   useEffect(() => {
     const initialPromptText = searchParams.get("prompt") as string;
     const attachments = searchParams.get("attachments")
       ? JSON.parse(searchParams.get("attachments") as string)
       : undefined;
     const enableWebSearch = searchParams.get("enableWebSearch") === "true";
+    const model = searchParams.get("model") ?? "google/gemini-2.5-flash";
     if (messages.length === 0 && initialPromptText) {
       append(
         {
@@ -62,6 +66,7 @@ export function Chat({ id, initialMessages }: ChatProps) {
         {
           body: {
             enableWebSearch,
+            model,
           },
         }
       );
@@ -69,6 +74,24 @@ export function Chat({ id, initialMessages }: ChatProps) {
       router.replace(window.location.pathname, { scroll: false });
     }
   }, []);
+
+  // following prompt
+  const handleSubmit = () => {
+    append(
+      {
+        role: "user",
+        content: input,
+        experimental_attachments: attachments,
+      },
+      {
+        body: {
+          enableWebSearch,
+          model,
+        },
+      }
+    );
+    setInput("");
+  };
 
   const { isMobile } = useSidebar();
 
@@ -79,6 +102,16 @@ export function Chat({ id, initialMessages }: ChatProps) {
       mutate(unstable_serialize(getChatHistoryPaginationKey));
     }
   }, [messages, status]);
+
+  // preference localstorage
+  const setEnableWebSearch = (v: boolean) => {
+    _setEnableWebSearch(v);
+    window.localStorage.setItem("enableWebSearch", String(v));
+  };
+  const setModel = (v: string) => {
+    _setModel(v);
+    window.localStorage.setItem("model", v);
+  };
 
   return (
     <div className="w-full h-full">
@@ -123,6 +156,8 @@ export function Chat({ id, initialMessages }: ChatProps) {
           status={status}
           enableWebSearch={enableWebSearch}
           setEnableWebSearch={setEnableWebSearch}
+          model={model}
+          setModel={setModel}
         />
       </div>
     </div>

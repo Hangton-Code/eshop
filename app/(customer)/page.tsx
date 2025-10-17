@@ -5,7 +5,7 @@ import { cn, generateUUID } from "@/lib/utils";
 import { Attachment } from "ai";
 import { ScanLine } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RecaptchaAttribution from "@/components/recaptcha-attribution";
 import { ExploreSection } from "@/components/explore-section";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function Home() {
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const [textInput, setTextInput] = useState("");
-  const [enableWebSearch, setEnableWebSearch] = useState(false);
+
+  const [enableWebSearch, _setEnableWebSearch] = useState(true);
+  const [model, _setModel] = useState("google/gemini-2.5-flash");
   const router = useRouter();
   const handleSubmit = async () => {
     const id = generateUUID();
@@ -21,10 +23,40 @@ export default function Home() {
     router.push(
       `/chat/${id}?prompt=${textInput}&attachments=${JSON.stringify(
         attachments ?? []
-      )}&enableWebSearch=${enableWebSearch}`
+      )}&enableWebSearch=${enableWebSearch}&model=${model}`
     );
   };
   const [tabValue, setTabValue] = useState("chat");
+
+  // preference localstorage
+  useEffect(() => {
+    // web search
+    const defaultEnableWebSearch =
+      window.localStorage.getItem("enableWebSearch");
+    if (defaultEnableWebSearch) {
+      _setEnableWebSearch(Boolean(defaultEnableWebSearch));
+    } else {
+      window.localStorage.setItem("enableWebSearch", "true");
+    }
+
+    // model selection
+    const defaultModel = window.localStorage.getItem("model");
+    if (defaultModel) {
+      _setModel(defaultModel);
+    } else {
+      window.localStorage.setItem("model", "google/gemini-2.5-flash");
+    }
+  }, []);
+
+  const setEnableWebSearch = (v: boolean) => {
+    _setEnableWebSearch(v);
+    window.localStorage.setItem("enableWebSearch", String(v));
+  };
+
+  const setModel = (v: string) => {
+    _setModel(v);
+    window.localStorage.setItem("model", v);
+  };
 
   return (
     <div
@@ -73,7 +105,22 @@ export default function Home() {
               status="ready"
               enableWebSearch={enableWebSearch}
               setEnableWebSearch={setEnableWebSearch}
+              model={model}
+              setModel={setModel}
             />
+            <div className="flex  justify-end">
+              <p className="text-muted-foreground text-xs mt-2">
+                LLMs Inferencing is Powered by{" "}
+                <a
+                  href="https://openrouter.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  OpenRouter
+                </a>
+              </p>
+            </div>
           </div>
         </TabsContent>
 

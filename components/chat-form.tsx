@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowUp, Paperclip, Search } from "lucide-react";
+import {
+  ChevronDown,
+  CircleCheckBig,
+  Globe,
+  Paperclip,
+  ScanLine,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { AutoResizeTextarea } from "./autoresize-textarea";
@@ -15,8 +21,28 @@ import {
 import { toast } from "sonner";
 import { Attachment } from "ai";
 import { PreviewAttachment } from "./preview-attachment";
-import { cn } from "@/lib/utils";
 import { useRecaptcha } from "@/hooks/use-recaptcha";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Switch } from "./ui/switch";
+
+export const models = {
+  "google/gemini-2.5-flash": {
+    name: "Gemini 2.5 Flash",
+    description: "Generally Recommended",
+  },
+  "deepseek/deepseek-chat-v3.1": {
+    name: "Deepseek V3.1",
+    description: "Great model as well",
+  },
+};
 
 type ChatFormProps = {
   handleSubmit: any;
@@ -26,7 +52,9 @@ type ChatFormProps = {
   setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
   status: "submitted" | "streaming" | "ready" | "error";
   enableWebSearch: boolean;
-  setEnableWebSearch: Dispatch<SetStateAction<boolean>>;
+  setEnableWebSearch: (v: boolean) => void;
+  model: string;
+  setModel: (v: string) => void;
 };
 
 export function ChatForm({
@@ -38,6 +66,8 @@ export function ChatForm({
   status,
   enableWebSearch,
   setEnableWebSearch,
+  model,
+  setModel,
 }: ChatFormProps) {
   const { generateToken, isAvailable } = useRecaptcha();
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -188,14 +218,14 @@ export function ChatForm({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Button
-            variant={"outline"}
+            variant={"ghost"}
             size={"icon"}
             onClick={() => fileInputRef.current?.click()}
-            className="shadow-none"
+            className="shadow-none rounded-full"
           >
             <Paperclip />
           </Button>
-          <Button
+          {/* <Button
             variant={"outline"}
             onClick={() => setEnableWebSearch((prev) => !prev)}
             className={cn(
@@ -207,19 +237,113 @@ export function ChatForm({
           >
             <Search />
             Web Search
-          </Button>
+          </Button> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant={"secondary"} className="rounded-full">
+                <Globe /> All Sources
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="top"
+              align="end"
+              className="[--radius:1rem]"
+            >
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+                  <label htmlFor="web-search">
+                    <Globe /> Web Search{" "}
+                    <Switch
+                      id="web-search"
+                      className="ml-auto"
+                      checked={enableWebSearch}
+                      onCheckedChange={setEnableWebSearch}
+                      defaultChecked
+                    />
+                  </label>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+                  <label htmlFor="web-search">
+                    <ScanLine /> Product Search
+                    <Switch
+                      id="web-search"
+                      className="ml-auto"
+                      defaultChecked
+                      disabled
+                    />
+                  </label>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="text-muted-foreground text-xs">
+                  We'll only search in the sources selected here.
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         {/* // <Button className="rounded-full w-10 h-10 p-0">
           //   <div className="w-3.5 h-3.5 rounded-xs bg-primary-foreground"></div>
           // </Button> */}
-        <Button
+        {/* <Button
           className="rounded-full w-10 h-10 p-0 flex justify-center items-center"
           variant={"secondary"}
           onClick={submitForm}
           disabled={status === "streaming" || status === "submitted"}
         >
           <ArrowUp />
-        </Button>
+        </Button> */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant={"secondary"} className="rounded-full">
+              <ChevronDown />{" "}
+              {models[model as keyof typeof models]?.name ?? model}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="bottom"
+            align="end"
+            className="[--radius:1.4rem] p-1.5"
+          >
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-muted-foreground text-sm">
+                Inference Model
+              </DropdownMenuLabel>
+              {Object.entries(models).map(([id, info]) => (
+                <DropdownMenuItem
+                  key={id}
+                  onSelect={() => setModel(id as keyof typeof models)}
+                >
+                  <div className="flex justify-between w-full items-center">
+                    <div className="p-1">
+                      <p className="font-medium">{info.name}</p>
+                      {info.description && (
+                        <p className="text-muted-foreground text-xs">
+                          {info.description}
+                        </p>
+                      )}
+                    </div>
+                    {model === id && (
+                      <div className="pr-3">
+                        <CircleCheckBig
+                          className="text-blue-600"
+                          strokeWidth={2.5}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-muted-foreground text-xs">
+                Inferences to any of the above models are free.
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </Card>
   );

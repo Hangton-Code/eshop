@@ -24,8 +24,17 @@ import {
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+const acceptedModelKeys = [
+  "google/gemini-2.5-flash",
+  "deepseek/deepseek-chat-v3.1",
+];
+
 export async function POST(req: Request) {
-  const { messages, id, enableWebSearch, recaptchaToken } = await req.json();
+  const { messages, id, enableWebSearch, recaptchaToken, model } =
+    await req.json();
+
+  if (!acceptedModelKeys.includes(model))
+    return new Response("Server error", { status: 400 });
 
   if (recaptchaToken) {
     try {
@@ -58,7 +67,7 @@ export async function POST(req: Request) {
   ]);
 
   const result = streamText({
-    model: openrouter("google/gemini-2.5-flash"),
+    model: openrouter(model),
     system: `
 You are EShop's AI Sales Assistant. Your primary goal is to provide a seamless, one-stop shopping experience by acting as a knowledgeable and helpful salesperson.
 
