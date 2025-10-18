@@ -7,10 +7,12 @@ export const PreviewAttachment = ({
   attachment,
   isUploading = false,
   handleDelete,
+  enableDelete,
 }: {
   attachment: Attachment;
   isUploading?: boolean;
-  handleDelete: () => void;
+  handleDelete?: () => void;
+  enableDelete: boolean;
 }) => {
   const { name, url, contentType } = attachment;
 
@@ -40,7 +42,7 @@ export const PreviewAttachment = ({
       )}
 
       {/* delete button */}
-      {!isUploading ? (
+      {enableDelete ? (
         <Button
           className="group-hover:flex hidden rounded-full absolute w-6 h-6 right-1 top-1"
           variant={"secondary"}

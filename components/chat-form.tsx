@@ -6,6 +6,7 @@ import {
   Globe,
   Paperclip,
   ScanLine,
+  Package,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
@@ -34,7 +35,7 @@ import {
 import { Switch } from "./ui/switch";
 
 export const models = {
-  "google/gemini-2.5-flash": {
+  "google/gemini-2.5-flash-preview-09-2025": {
     name: "Gemini 2.5 Flash",
     description: "Generally Recommended",
   },
@@ -53,6 +54,8 @@ type ChatFormProps = {
   status: "submitted" | "streaming" | "ready" | "error";
   enableWebSearch: boolean;
   setEnableWebSearch: (v: boolean) => void;
+  enableOrderCheck: boolean;
+  setEnableOrderCheck: (v: boolean) => void;
   model: string;
   setModel: (v: string) => void;
 };
@@ -66,6 +69,8 @@ export function ChatForm({
   status,
   enableWebSearch,
   setEnableWebSearch,
+  enableOrderCheck,
+  setEnableOrderCheck,
   model,
   setModel,
 }: ChatFormProps) {
@@ -165,6 +170,7 @@ export function ChatForm({
         {
           body: {
             enableWebSearch,
+            enableOrderCheck,
             recaptchaToken,
           },
         }
@@ -175,7 +181,14 @@ export function ChatForm({
       console.error("reCAPTCHA verification failed:", error);
       toast.error("Verification failed. Please try again.");
     }
-  }, [handleSubmit, attachments, generateToken, isAvailable, enableWebSearch]);
+  }, [
+    handleSubmit,
+    attachments,
+    generateToken,
+    isAvailable,
+    enableWebSearch,
+    enableOrderCheck,
+  ]);
 
   return (
     <Card className="relative px-4 pt-5 pb-3 w-full max-w-3xl flex flex-col gap-4.5">
@@ -198,6 +211,7 @@ export function ChatForm({
               handleDelete={() => removeAttachment(attachment.url)}
               key={attachment.url}
               attachment={attachment}
+              enableDelete
             />
           ))}
 
@@ -209,8 +223,7 @@ export function ChatForm({
                 name: filename,
                 contentType: "",
               }}
-              isUploading={true}
-              handleDelete={() => {}}
+              enableDelete={false}
             />
           ))}
         </div>
@@ -273,13 +286,25 @@ export function ChatForm({
                   </label>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
-                  <label htmlFor="web-search">
+                  <label htmlFor="product-search">
                     <ScanLine /> Product Search
                     <Switch
-                      id="web-search"
+                      id="product-search"
                       className="ml-auto"
                       defaultChecked
                       disabled
+                    />
+                  </label>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+                  <label htmlFor="order-check">
+                    <Package /> Order Check
+                    <Switch
+                      id="order-check"
+                      className="ml-auto"
+                      checked={enableOrderCheck}
+                      onCheckedChange={setEnableOrderCheck}
+                      defaultChecked
                     />
                   </label>
                 </DropdownMenuItem>

@@ -18,7 +18,10 @@ export default function Home() {
   const [textInput, setTextInput] = useState("");
 
   const [enableWebSearch, _setEnableWebSearch] = useState(true);
-  const [model, _setModel] = useState("google/gemini-2.5-flash");
+  const [enableOrderCheck, _setEnableOrderCheck] = useState(true);
+  const [model, _setModel] = useState(
+    "google/gemini-2.5-flash-preview-09-2025"
+  );
   const router = useRouter();
   const handleSubmit = async () => {
     const id = generateUUID();
@@ -26,7 +29,7 @@ export default function Home() {
     router.push(
       `/chat/${id}?prompt=${textInput}&attachments=${JSON.stringify(
         attachments ?? []
-      )}&enableWebSearch=${enableWebSearch}&model=${model}`
+      )}&enableWebSearch=${enableWebSearch}&enableOrderCheck=${enableOrderCheck}&model=${model}`
     );
   };
   const [tabValue, setTabValue] = useState("chat");
@@ -42,18 +45,35 @@ export default function Home() {
       window.localStorage.setItem("enableWebSearch", "true");
     }
 
+    // order check
+    const defaultEnableOrderCheck =
+      window.localStorage.getItem("enableOrderCheck");
+    if (defaultEnableOrderCheck) {
+      _setEnableOrderCheck(Boolean(defaultEnableOrderCheck));
+    } else {
+      window.localStorage.setItem("enableOrderCheck", "true");
+    }
+
     // model selection
     const defaultModel = window.localStorage.getItem("model");
     if (defaultModel) {
       _setModel(defaultModel);
     } else {
-      window.localStorage.setItem("model", "google/gemini-2.5-flash");
+      window.localStorage.setItem(
+        "model",
+        "google/gemini-2.5-flash-preview-09-2025"
+      );
     }
   }, []);
 
   const setEnableWebSearch = (v: boolean) => {
     _setEnableWebSearch(v);
     window.localStorage.setItem("enableWebSearch", String(v));
+  };
+
+  const setEnableOrderCheck = (v: boolean) => {
+    _setEnableOrderCheck(v);
+    window.localStorage.setItem("enableOrderCheck", String(v));
   };
 
   const setModel = (v: string) => {
@@ -114,6 +134,8 @@ export default function Home() {
               status="ready"
               enableWebSearch={enableWebSearch}
               setEnableWebSearch={setEnableWebSearch}
+              enableOrderCheck={enableOrderCheck}
+              setEnableOrderCheck={setEnableOrderCheck}
               model={model}
               setModel={setModel}
             />

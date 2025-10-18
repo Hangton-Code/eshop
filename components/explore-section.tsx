@@ -7,7 +7,6 @@ import { Loader2 } from "lucide-react";
 import { Merchant } from "@/db/schema";
 import { categories } from "./cms/category-combobox";
 import { useRouter } from "next/navigation";
-import { Highlighter } from "./ui/highlighter";
 
 interface ExploreProduct {
   id: string;

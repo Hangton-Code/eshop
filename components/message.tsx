@@ -1,7 +1,14 @@
 import { cn, sanitizeText } from "@/lib/utils";
 import { UIMessage } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
-import { SparklesIcon, SquareChartGantt } from "lucide-react";
+import {
+  SparklesIcon,
+  SquareChartGantt,
+  Package,
+  Truck,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 import { Markdown } from "./markdown";
 import { PreviewAttachment } from "./preview-attachment";
 import { MessageReasoning } from "./message-reasoning";
@@ -10,6 +17,7 @@ import { z } from "zod";
 import { InteractiveHoverButton } from "./magicui/interactive-hover-button";
 import { useRouter } from "next/navigation";
 import { Ripples } from "./icons/ripples";
+import { Badge } from "./ui/badge";
 
 const ProductDisplay = z.object({
   id: z.string(),
@@ -20,6 +28,19 @@ const ProductDisplay = z.object({
       url: z.string(),
     })
   ),
+});
+
+const OrderDisplay = z.object({
+  id: z.number(),
+  productDetails: z.object({
+    name: z.string(),
+    pictureUrl: z.string().optional(),
+  }),
+  quantity: z.number(),
+  pricePerUnit: z.number(),
+  grossTotal: z.number(),
+  deliveryStatus: z.enum(["ORDERED", "SHIPPED", "DELIVERED", "CANCELED"]),
+  createdAt: z.string(),
 });
 
 export function Message({
@@ -70,6 +91,7 @@ export function Message({
                     <PreviewAttachment
                       key={attachment.url}
                       attachment={attachment}
+                      enableDelete={false}
                     />
                   ))}
                 </div>
@@ -120,6 +142,20 @@ export function Message({
                       animate={{ y: 0, opacity: 1 }}
                     >
                       <Ripples className="w-5" /> Searching Products
+                    </motion.div>
+                  );
+                }
+                if (tool.toolName === "getUserOrders") {
+                  const isSearching = message.parts.length - 1 === index;
+                  if (!isSearching) return <div key={index}></div>;
+                  return (
+                    <motion.div
+                      key={index}
+                      className="relative w-fit border py-3 px-4  rounded-xl flex gap-3"
+                      initial={{ y: 5, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                    >
+                      <Ripples className="w-5" /> Fetching Your Orders
                     </motion.div>
                   );
                 }
@@ -175,32 +211,121 @@ export function Message({
                     </div>
                   );
                 }
-                // Tool handling disabled to fix echoing issue
-                // if (
-                //   tool.toolName === "provideSuggestedPrompts" &&
-                //   showSuggestedPrompts
-                // ) {
-                //   return (
-                //     <div key={index} className="space-y-2">
-                //       <div className="text-sm text-muted-foreground mb-2">
-                //         Suggested prompts:
-                //       </div>
-                //       {(tool.args.prompts as string[]).map(
-                //         (prompt, promptIndex) => (
-                //           <motion.button
-                //             key={promptIndex}
-                //             className="w-full text-left p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-sm"
-                //             onClick={() => onSuggestedPromptClick?.(prompt)}
-                //             initial={{ y: 5, opacity: 0 }}
-                //             animate={{ y: 0, opacity: 1 }}
-                //           >
-                //             {prompt}
-                //           </motion.button>
-                //         )
-                //       )}
-                //     </div>
-                //   );
-                // }
+                if (tool.toolName === "showUserOrders") {
+                  const getStatusIcon = (status: string) => {
+                    switch (status) {
+                      case "ORDERED":
+                        return <Package className="w-4 h-4" />;
+                      case "SHIPPED":
+                        return <Truck className="w-4 h-4" />;
+                      case "DELIVERED":
+                        return <CheckCircle className="w-4 h-4" />;
+                      case "CANCELED":
+                        return <XCircle className="w-4 h-4" />;
+                      default:
+                        return <Package className="w-4 h-4" />;
+                    }
+                  };
+
+                  const getStatusColor = (status: string) => {
+                    switch (status) {
+                      case "ORDERED":
+                        return "bg-blue-100 text-blue-800 border-blue-200";
+                      case "SHIPPED":
+                        return "bg-purple-100 text-purple-800 border-purple-200";
+                      case "DELIVERED":
+                        return "bg-green-100 text-green-800 border-green-200";
+                      case "CANCELED":
+                        return "bg-red-100 text-red-800 border-red-200";
+                      default:
+                        return "bg-gray-100 text-gray-800 border-gray-200";
+                    }
+                  };
+
+                  const orders = tool.args.orders as z.infer<
+                    typeof OrderDisplay
+                  >[];
+
+                  return (
+                    <div key={index} className="space-y-2">
+                      {orders.map((order) => (
+                        <motion.div
+                          className="relative bg-gradient-to-br transition-colors group hover:to-neutral-200/60 w-fit from-neutral-50 to-neutral-100 border p-3 rounded-xl flex gap-3"
+                          key={order.id}
+                          initial={{ y: 5, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                        >
+                          <div>
+                            {order.productDetails.pictureUrl ? (
+                              <img
+                                src={order.productDetails.pictureUrl}
+                                alt={order.productDetails.name}
+                                draggable="false"
+                                className="w-32 h-32 object-contain bg-background rounded-sm select-none"
+                              />
+                            ) : (
+                              <div className="w-32 h-32 bg-background rounded-sm select-none flex justify-center items-center">
+                                <Package className="w-24 h-24" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="space-y-2 pt-1 w-[300px] flex flex-col">
+                            <p className="w-full text-lg font-medium">
+                              {order.productDetails.name}
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <Badge
+                                variant="outline"
+                                className={cn(
+                                  "flex items-center gap-1",
+                                  getStatusColor(order.deliveryStatus)
+                                )}
+                              >
+                                {getStatusIcon(order.deliveryStatus)}
+                                {order.deliveryStatus}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground">
+                                Qty: {order.quantity}
+                              </span>
+                            </div>
+                            <h1 className="text-xl font-extrabold">
+                              {order.grossTotal.toLocaleString("en-US", {
+                                style: "currency",
+                                currency: "HKD",
+                              })}
+                            </h1>
+                            <p className="text-xs text-muted-foreground">
+                              Order #{order.id} •{" "}
+                              {new Date(order.createdAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}
+                            </p>
+                          </div>
+                        </motion.div>
+                      ))}
+                      {orders.length > 0 && (
+                        <motion.div
+                          className="flex justify-center pt-2"
+                          initial={{ y: 5, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                        >
+                          <InteractiveHoverButton
+                            onClick={() => {
+                              router.push("/orders");
+                            }}
+                          >
+                            View All Orders
+                          </InteractiveHoverButton>
+                        </motion.div>
+                      )}
+                    </div>
+                  );
+                }
               }
             })}
           </div>

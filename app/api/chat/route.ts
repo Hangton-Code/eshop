@@ -5,6 +5,7 @@ import {
   deleteChatById,
   createChat,
   searchProductsByText,
+  getOrdersByCustomerId,
 } from "@/lib/db/queries";
 import { generateUUID, getTrailingMessageId } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
@@ -25,13 +26,19 @@ import {
 export const maxDuration = 30;
 
 const acceptedModelKeys = [
-  "google/gemini-2.5-flash",
+  "google/gemini-2.5-flash-preview-09-2025",
   "deepseek/deepseek-chat-v3.1",
 ];
 
 export async function POST(req: Request) {
-  const { messages, id, enableWebSearch, recaptchaToken, model } =
-    await req.json();
+  const {
+    messages,
+    id,
+    enableWebSearch,
+    enableOrderCheck,
+    recaptchaToken,
+    model,
+  } = await req.json();
 
   if (!acceptedModelKeys.includes(model))
     return new Response("Server error", { status: 400 });
@@ -71,17 +78,21 @@ export async function POST(req: Request) {
     system: `
 You are EShop's AI Sales Assistant. Your primary goal is to provide a seamless, one-stop shopping experience by acting as a knowledgeable and helpful salesperson.
 
-**EShop is located in Hong Kong, and all prices displayed are in HKD (Hong Kong Dollars).**
+**About EShop:**
+* EShop is a large-scale e-commerce marketplace similar to Amazon or Taobao, featuring a vast catalog of products across many categories.
+* We connect customers with multiple merchants and offer a wide variety of products ranging from electronics, fashion, home goods, to everyday essentials.
+* EShop is located in Hong Kong, and all prices displayed are in HKD (Hong Kong Dollars).
 
 **Your responsibilities include:**
 
 * **Product Search:** Assist users in finding products, whether they provide specific keywords, vague descriptions, or images. If an image is provided, generate descriptive keywords to facilitate the search.
     * **Important:** Even if a product cannot be found in our store, you should still endeavor to answer the user's question, provide relevant information, or suggest alternatives.
+* **Order Tracking:** Help users check their order history and status when they ask about their orders. By default, only show onboarding orders (orders that haven't been delivered yet). Only show complete order history including delivered orders if they explicitly ask for "all orders", "order history", or "past orders". If they have no onboarding orders, inform them that they have no pending orders.
 * **Guidance and Recommendations:** For users unsure of their needs, offer suggestions and refine recommendations to help them discover suitable products.
 * **Information Clarification:** Clarify product details and help users understand specific terms or features, acting as their expert guide.
 * **Shopping List Generation:** Assist users in creating shopping lists.
 * **Multilingual Support:** Understand and respond in multiple languages, facilitating access to product information regardless of the user's preferred language.
-* **Diverse Input Handling:** Process both text and voice inputs for queries and product descriptions.
+* **Diverse Input Handling:** Process text inputs for queries and product descriptions.
 
 **Your tone should be:**
 
@@ -92,6 +103,8 @@ You are EShop's AI Sales Assistant. Your primary goal is to provide a seamless, 
 Always aim to guide users towards making informed and rational purchasing decisions.
 
 Focus on providing helpful, contextual responses to user queries. When appropriate, you may use available tools to enhance the user experience, but do not mention or reference any UI elements, buttons, or prompts in your text responses.
+
+**Important:** After using web search, never include or display URLs or website links in your responses. Synthesize the information naturally without citing sources or showing where the information came from.
     `,
     messages,
     experimental_generateMessageId: generateUUID,
@@ -133,19 +146,67 @@ Focus on providing helpful, contextual responses to user queries. When appropria
           return "Products are displayed to the user";
         },
       }),
-      // Temporarily disabled to fix echoing issue
-      provideSuggestedPrompts: tool({
+      getUserOrders: tool({
         description:
-          "Generate 2-3 helpful suggested prompts that will be displayed as clickable buttons for the user to continue the conversation. These prompts should be contextual and help guide the user towards making informed purchasing decisions.",
+          "Fetch the user's order history. By default, only fetch orders that are still onboarding (not delivered yet - status ORDERED or SHIPPED). Only include delivered or canceled orders if the user explicitly asks for their complete order history or past orders.",
         parameters: z.object({
-          prompts: z
-            .array(z.string())
+          includeAllOrders: z
+            .boolean()
+            .optional()
             .describe(
-              "Array of suggested prompt texts for the user to continue the conversation."
+              "Set to true only if user explicitly asks for all orders, complete order history, or past orders. Default is false to only show onboarding orders."
             ),
         }),
+        execute: async ({ includeAllOrders = false }) => {
+          if (!enableOrderCheck) {
+            return { error: "Order checking is disabled by user" };
+          }
+
+          const { userId } = await auth();
+          if (!userId) {
+            return { error: "User not authenticated" };
+          }
+
+          const allOrders = await getOrdersByCustomerId(userId);
+
+          // By default, only return orders that are still onboarding (not delivered yet)
+          if (!includeAllOrders) {
+            const onboardingOrders = allOrders.filter(
+              (order) =>
+                order.deliveryStatus === "ORDERED" ||
+                order.deliveryStatus === "SHIPPED"
+            );
+            return onboardingOrders;
+          }
+
+          return allOrders;
+        },
+      }),
+      showUserOrders: tool({
+        description: "Display user's orders to the user.",
+        parameters: z.object({
+          orders: z.array(
+            z.object({
+              id: z.number(),
+              productDetails: z.object({
+                name: z.string(),
+                pictureUrl: z.string().optional(),
+              }),
+              quantity: z.number(),
+              pricePerUnit: z.number(),
+              grossTotal: z.number(),
+              deliveryStatus: z.enum([
+                "ORDERED",
+                "SHIPPED",
+                "DELIVERED",
+                "CANCELED",
+              ]),
+              createdAt: z.string(),
+            })
+          ),
+        }),
         execute: async () => {
-          return "Suggested prompts are displayed to the user";
+          return "Orders are displayed to the user";
         },
       }),
     },

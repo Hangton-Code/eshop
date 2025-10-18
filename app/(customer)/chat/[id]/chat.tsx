@@ -26,8 +26,11 @@ export function Chat({ id, initialMessages }: ChatProps) {
   const [enableWebSearch, _setEnableWebSearch] = useState<boolean>(
     searchParams.get("enableWebSearch") === "true"
   );
+  const [enableOrderCheck, _setEnableOrderCheck] = useState<boolean>(
+    searchParams.get("enableOrderCheck") === "true"
+  );
   const [model, _setModel] = useState(
-    searchParams.get("model") ?? "google/gemini-2.5-flash"
+    searchParams.get("model") ?? "google/gemini-2.5-flash-preview-09-2025"
   );
 
   const { messages, input, setInput, append, status } = useChat({
@@ -55,7 +58,9 @@ export function Chat({ id, initialMessages }: ChatProps) {
       ? JSON.parse(searchParams.get("attachments") as string)
       : undefined;
     const enableWebSearch = searchParams.get("enableWebSearch") === "true";
-    const model = searchParams.get("model") ?? "google/gemini-2.5-flash";
+    const enableOrderCheck = searchParams.get("enableOrderCheck") === "true";
+    const model =
+      searchParams.get("model") ?? "google/gemini-2.5-flash-preview-09-2025";
     if (messages.length === 0 && initialPromptText) {
       append(
         {
@@ -66,6 +71,7 @@ export function Chat({ id, initialMessages }: ChatProps) {
         {
           body: {
             enableWebSearch,
+            enableOrderCheck,
             model,
           },
         }
@@ -86,6 +92,7 @@ export function Chat({ id, initialMessages }: ChatProps) {
       {
         body: {
           enableWebSearch,
+          enableOrderCheck,
           model,
         },
       }
@@ -107,6 +114,10 @@ export function Chat({ id, initialMessages }: ChatProps) {
   const setEnableWebSearch = (v: boolean) => {
     _setEnableWebSearch(v);
     window.localStorage.setItem("enableWebSearch", String(v));
+  };
+  const setEnableOrderCheck = (v: boolean) => {
+    _setEnableOrderCheck(v);
+    window.localStorage.setItem("enableOrderCheck", String(v));
   };
   const setModel = (v: string) => {
     _setModel(v);
@@ -156,6 +167,8 @@ export function Chat({ id, initialMessages }: ChatProps) {
           status={status}
           enableWebSearch={enableWebSearch}
           setEnableWebSearch={setEnableWebSearch}
+          enableOrderCheck={enableOrderCheck}
+          setEnableOrderCheck={setEnableOrderCheck}
           model={model}
           setModel={setModel}
         />

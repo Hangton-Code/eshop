@@ -1,20 +1,22 @@
+import { categories } from "@/components/cms/category-combobox";
 import {
   getProductsByCategory,
   getTotalProductCountByCategory,
 } from "@/lib/db/queries";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { category: string } }
-) {
+const categoriesAvailable = categories.map((v) => v.value);
+
+export async function GET(req: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const { searchParams } = new URL(req.url);
+
+    const category = searchParams.get("category");
+    if (!category || !categoriesAvailable.includes(category)) throw new Error();
+
     const page = parseInt(searchParams.get("page") || "0");
     const limit = parseInt(searchParams.get("limit") || "20");
     const offset = page * limit;
-
-    const { category } = params;
 
     const [products, totalCount] = await Promise.all([
       getProductsByCategory(category, limit, offset),

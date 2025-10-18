@@ -3,7 +3,7 @@ import { openrouter } from "./models";
 
 export async function generateTitleFromUserMessage(message: UIMessage) {
   const { text: title } = await generateText({
-    model: openrouter("google/gemini-2.5-flash"),
+    model: openrouter("google/gemini-2.5-flash-preview-09-2025"),
     system: `\n
     - you will generate a short title based on the first message a user begins a conversation with
     - ensure it is not more than 80 characters long
