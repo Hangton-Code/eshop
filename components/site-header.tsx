@@ -23,7 +23,7 @@ export function SiteHeader() {
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    router.push(`/chat/${searchQuery}`);
+    router.push(`/search/${searchQuery}`);
   };
 
   return (
