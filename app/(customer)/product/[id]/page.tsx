@@ -2,6 +2,8 @@ import { getProductById } from "@/lib/db/queries";
 import { ProductPageContent } from "./content";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductPage({
   params,
 }: {

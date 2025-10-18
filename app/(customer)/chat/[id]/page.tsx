@@ -4,6 +4,8 @@ import { Chat } from "./chat";
 import { Message } from "@/db/schema";
 import type { Attachment, UIMessage } from "ai";
 
+export const dynamic = "force-dynamic";
+
 function convertToUIMessages(messages: Array<Message>): Array<UIMessage> {
   return messages.map((message) => ({
     id: message.id,

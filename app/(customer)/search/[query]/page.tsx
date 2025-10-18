@@ -2,6 +2,8 @@ import ProductCard from "@/components/product-card";
 import { Merchant } from "@/db/schema";
 import { getMerchantsByIds, searchProductsByText } from "@/lib/db/queries";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductSearchingPage({
   params,
 }: {

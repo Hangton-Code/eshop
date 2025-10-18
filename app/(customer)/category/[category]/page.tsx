@@ -1,5 +1,7 @@
 import { CategoryContent } from "./content";
 
+export const dynamic = "force-dynamic";
+
 export default async function CategoryPage({
   params,
 }: {

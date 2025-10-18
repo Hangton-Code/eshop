@@ -15,6 +15,8 @@ import { myDayJS } from "@/lib/dayjs";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function CMSHomePage() {
   const { userId } = await auth();
   if (!userId) redirect("/");

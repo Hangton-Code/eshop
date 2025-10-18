@@ -3,6 +3,8 @@
 import { createStripeSession } from "@/actions/stripe";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 // export default function CheckoutPage() {
 //   return (
 //     <div id="checkout">

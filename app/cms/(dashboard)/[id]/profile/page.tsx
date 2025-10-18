@@ -2,6 +2,8 @@ import { getMerchantById } from "@/lib/db/queries";
 import ProfileManagementPageContent from "./content";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProfileManagementPage({
   params,
 }: {

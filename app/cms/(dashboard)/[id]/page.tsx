@@ -4,6 +4,8 @@ import {
 } from "@/lib/db/queries";
 import { OverviewPageContent } from "./content";
 
+export const dynamic = "force-dynamic";
+
 export default async function OverviewPage({
   params,
 }: {

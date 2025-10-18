@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductCard from "@/components/product-card";
 import { Attachment } from "ai";
 
+export const dynamic = "force-dynamic";
+
 export default async function MerchantPage({
   params,
 }: {
