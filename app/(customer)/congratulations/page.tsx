@@ -4,6 +4,8 @@ import confetti from "canvas-confetti";
 import Link from "next/link";
 import { useEffect } from "react";
 
+//
+
 export default function CongratulationsPage() {
   useEffect(() => {
     const duration = 5 * 1000;
