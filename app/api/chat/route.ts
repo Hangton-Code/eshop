@@ -28,7 +28,7 @@ export const dynamic = "force-dynamic";
 
 const acceptedModelKeys = [
   "google/gemini-2.5-flash-preview-09-2025",
-  "deepseek/deepseek-chat-v3.1",
+  "qwen/qwen3-vl-235b-a22b-instruct",
 ];
 
 export async function POST(req: Request) {

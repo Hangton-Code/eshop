@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EShop - Interactive Sitemap</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 50px;
+        color: white;
+      }
+
+      header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .sitemap-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .section {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #f0f0f0;
+      }
+
+      .section-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+
+      .customer-icon {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .cms-icon {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .api-icon {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .section-header h2 {
+        font-size: 1.8rem;
+        color: #333;
+      }
+
+      .tree {
+        margin-left: 0;
+      }
+
+      .tree-node {
+        margin: 10px 0;
+        position: relative;
+      }
+
+      .tree-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        border-left: 4px solid transparent;
+      }
+
+      .tree-item:hover {
+        background: #e9ecef;
+        transform: translateX(5px);
+      }
+
+      .tree-item.route {
+        border-left-color: #667eea;
+      }
+
+      .tree-item.route:hover {
+        background: #f0f4ff;
+      }
+
+      .tree-item.feature {
+        border-left-color: #28a745;
+        background: #f0fff4;
+      }
+
+      .tree-item.protected {
+        border-left-color: #ffc107;
+      }
+
+      .tree-item.api {
+        border-left-color: #00f2fe;
+      }
+
+      .toggle-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #666;
+        transition: transform 0.3s ease;
+      }
+
+      .toggle-icon.expanded {
+        transform: rotate(90deg);
+      }
+
+      .node-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+      }
+
+      .node-text {
+        font-weight: 500;
+        color: #333;
+      }
+
+      .node-path {
+        font-family: "Courier New", monospace;
+        color: #666;
+        font-size: 0.9rem;
+        background: #fff;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+
+      .node-badge {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .badge-public {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .badge-protected {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge-api {
+        background: #dbeafe;
+        color: #1e3a8a;
+      }
+
+      .children {
+        margin-left: 30px;
+        margin-top: 10px;
+        border-left: 2px solid #e9ecef;
+        padding-left: 20px;
+        display: none;
+      }
+
+      .children.show {
+        display: block;
+      }
+
+      .flow-section {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .flow-section h3 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .flow-diagram {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 12px;
+      }
+
+      .flow-step {
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 8px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .flow-arrow {
+        font-size: 1.5rem;
+        color: #666;
+      }
+
+      .legend {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        margin-top: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .legend h3 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .legend-items {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .legend-color {
+        width: 30px;
+        height: 20px;
+        border-radius: 4px;
+      }
+
+      footer {
+        text-align: center;
+        color: white;
+        margin-top: 40px;
+        opacity: 0.9;
+      }
+
+      @media (max-width: 768px) {
+        .sitemap-grid {
+          grid-template-columns: 1fr;
+        }
+
+        header h1 {
+          font-size: 2rem;
+        }
+
+        .flow-diagram {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .flow-arrow {
+          transform: rotate(90deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🛒 EShop Sitemap</h1>
+        <p>Interactive Website Structure & Hierarchy</p>
+        <p style="margin-top: 10px; color: #fbbf24; font-weight: 600">
+          🔒 All routes are protected by Clerk Authentication
+        </p>
+      </header>
+
+      <div class="sitemap-grid">
+        <!-- Customer Section -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon customer-icon">👥</div>
+            <h2>Customer Pages</h2>
+          </div>
+          <div class="tree">
+            <div class="tree-node">
+              <div class="tree-item route protected" onclick="toggleNode(this)">
+                <span class="toggle-icon">▶</span>
+                <div class="node-label">
+                  <span class="node-text">Home</span>
+                  <span class="node-path">/</span>
+                  <span class="node-badge badge-protected">Protected</span>
+                </div>
+              </div>
+              <div class="children">
+                <div class="tree-node">
+                  <div class="tree-item feature">
+                    <span class="toggle-icon">📱</span>
+                    <span class="node-text"
+                      >Chat Tab - AI Shopping Assistant</span
+                    >
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item feature">
+                    <span class="toggle-icon">🔍</span>
+                    <span class="node-text"
+                      >Explore Tab - Product Discovery</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tree-node">
+              <div class="tree-item route protected" onclick="toggleNode(this)">
+                <span class="toggle-icon">▶</span>
+                <div class="node-label">
+                  <span class="node-text">Shopping & Products</span>
+                  <span class="node-badge badge-protected">Protected</span>
+                </div>
+              </div>
+              <div class="children">
+                <div class="tree-node">
+                  <div
+                    class="tree-item route protected"
+                    onclick="toggleNode(this)"
+                  >
+                    <span class="toggle-icon">▶</span>
+                    <div class="node-label">
+                      <span class="node-text">Product Detail</span>
+                      <span class="node-path">/product/[id]</span>
+                    </div>
+                  </div>
+                  <div class="children">
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">•</span
+                      ><span class="node-text">Product Information</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">•</span
+                      ><span class="node-text">Add to Cart</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">•</span
+                      ><span class="node-text">Merchant Info</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item route protected">
+                    <span class="toggle-icon">📂</span>
+                    <div class="node-label">
+                      <span class="node-text">Category Listing</span>
+                      <span class="node-path">/category/[category]</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item route protected">
+                    <span class="toggle-icon">🔎</span>
+                    <div class="node-label">
+                      <span class="node-text">Search Results</span>
+                      <span class="node-path">/search/[query]</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item route protected">
+                    <span class="toggle-icon">🏪</span>
+                    <div class="node-label">
+                      <span class="node-text">Merchant Store</span>
+                      <span class="node-path">/merchant/[id]</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tree-node">
+              <div class="tree-item route" onclick="toggleNode(this)">
+                <span class="toggle-icon">▶</span>
+                <div class="node-label">
+                  <span class="node-text">Cart & Checkout</span>
+                </div>
+              </div>
+              <div class="children">
+                <div class="tree-node">
+                  <div class="tree-item feature">
+                    <span class="toggle-icon">🛒</span>
+                    <span class="node-text">Cart Sheet Component</span>
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item route">
+                    <span class="toggle-icon">💳</span>
+                    <div class="node-label">
+                      <span class="node-text">Checkout</span>
+                      <span class="node-path">/checkout</span>
+                      <span class="node-badge badge-protected">Protected</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item route protected">
+                    <span class="toggle-icon">🎉</span>
+                    <div class="node-label">
+                      <span class="node-text">Order Success</span>
+                      <span class="node-path">/congratulations</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item route protected">
+                    <span class="toggle-icon">↩️</span>
+                    <div class="node-label">
+                      <span class="node-text">Payment Return</span>
+                      <span class="node-path">/return</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tree-node">
+              <div class="tree-item route" onclick="toggleNode(this)">
+                <span class="toggle-icon">▶</span>
+                <div class="node-label">
+                  <span class="node-text">Customer Account</span>
+                  <span class="node-badge badge-protected">Protected</span>
+                </div>
+              </div>
+              <div class="children">
+                <div class="tree-node">
+                  <div class="tree-item route">
+                    <span class="toggle-icon">👤</span>
+                    <div class="node-label">
+                      <span class="node-text">Account Settings</span>
+                      <span class="node-path">/account</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-node">
+                  <div class="tree-item route">
+                    <span class="toggle-icon">📦</span>
+                    <div class="node-label">
+                      <span class="node-text">Order History</span>
+                      <span class="node-path">/orders</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tree-node">
+              <div class="tree-item route" onclick="toggleNode(this)">
+                <span class="toggle-icon">▶</span>
+                <div class="node-label">
+                  <span class="node-text">AI Chat</span>
+                  <span class="node-path">/chat/[id]</span>
+                  <span class="node-badge badge-protected">Protected</span>
+                </div>
+              </div>
+              <div class="children">
+                <div class="tree-item feature">
+                  <span class="toggle-icon">🤖</span
+                  ><span class="node-text">Product Recommendations</span>
+                </div>
+                <div class="tree-item feature">
+                  <span class="toggle-icon">🌐</span
+                  ><span class="node-text">Web Search Integration</span>
+                </div>
+                <div class="tree-item feature">
+                  <span class="toggle-icon">📋</span
+                  ><span class="node-text">Order Checking</span>
+                </div>
+                <div class="tree-item feature">
+                  <span class="toggle-icon">📎</span
+                  ><span class="node-text">File Attachments</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CMS Section -->
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon cms-icon">🏢</div>
+            <h2>CMS / Merchant Dashboard</h2>
+          </div>
+          <div class="tree">
+            <div class="tree-node">
+              <div class="tree-item route protected">
+                <span class="toggle-icon">🏠</span>
+                <div class="node-label">
+                  <span class="node-text">CMS Landing</span>
+                  <span class="node-path">/cms</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tree-node">
+              <div class="tree-item route protected" onclick="toggleNode(this)">
+                <span class="toggle-icon">▶</span>
+                <div class="node-label">
+                  <span class="node-text">Merchant Dashboard</span>
+                  <span class="node-path">/cms/[id]</span>
+                </div>
+              </div>
+              <div class="children">
+                <div class="tree-node">
+                  <div
+                    class="tree-item route protected"
+                    onclick="toggleNode(this)"
+                  >
+                    <span class="toggle-icon">▶</span>
+                    <div class="node-label">
+                      <span class="node-text">Dashboard Overview</span>
+                      <span class="node-path">/cms/[id]</span>
+                    </div>
+                  </div>
+                  <div class="children">
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">📊</span
+                      ><span class="node-text">Sales Statistics</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">📈</span
+                      ><span class="node-text">Recent Orders</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">⚡</span
+                      ><span class="node-text">Quick Actions</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tree-node">
+                  <div
+                    class="tree-item route protected"
+                    onclick="toggleNode(this)"
+                  >
+                    <span class="toggle-icon">▶</span>
+                    <div class="node-label">
+                      <span class="node-text">Products Management</span>
+                      <span class="node-path">/cms/[id]/products</span>
+                    </div>
+                  </div>
+                  <div class="children">
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">➕</span
+                      ><span class="node-text">Add Product</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">✏️</span
+                      ><span class="node-text">Edit Product</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">🗑️</span
+                      ><span class="node-text">Delete Product</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">📦</span
+                      ><span class="node-text">Inventory Management</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tree-node">
+                  <div
+                    class="tree-item route protected"
+                    onclick="toggleNode(this)"
+                  >
+                    <span class="toggle-icon">▶</span>
+                    <div class="node-label">
+                      <span class="node-text">Orders Management</span>
+                      <span class="node-path">/cms/[id]/orders</span>
+                    </div>
+                  </div>
+                  <div class="children">
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">👁️</span
+                      ><span class="node-text">View Order Details</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">🔄</span
+                      ><span class="node-text">Update Order Status</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">🚚</span
+                      ><span class="node-text">Track Shipments</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">↩️</span
+                      ><span class="node-text">Returns/Refunds</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tree-node">
+                  <div
+                    class="tree-item route protected"
+                    onclick="toggleNode(this)"
+                  >
+                    <span class="toggle-icon">▶</span>
+                    <div class="node-label">
+                      <span class="node-text">Profile Settings</span>
+                      <span class="node-path">/cms/[id]/profile</span>
+                    </div>
+                  </div>
+                  <div class="children">
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">🏢</span
+                      ><span class="node-text">Business Information</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">📞</span
+                      ><span class="node-text">Contact Details</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">⚙️</span
+                      ><span class="node-text">Store Settings</span>
+                    </div>
+                    <div class="tree-item feature">
+                      <span class="toggle-icon">💰</span
+                      ><span class="node-text">Payment Config</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Routes Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon api-icon">🔌</div>
+          <h2>API Routes</h2>
+        </div>
+        <div class="tree">
+          <div class="tree-node">
+            <div class="tree-item api" onclick="toggleNode(this)">
+              <span class="toggle-icon">▶</span>
+              <div class="node-label">
+                <span class="node-text">Chat API</span>
+                <span class="node-path">POST /api/chat</span>
+                <span class="node-badge badge-api">API</span>
+              </div>
+            </div>
+            <div class="children">
+              <div class="tree-item feature">
+                <span class="toggle-icon">💬</span
+                ><span class="node-text">AI Streaming Endpoint</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tree-node">
+            <div class="tree-item api" onclick="toggleNode(this)">
+              <span class="toggle-icon">▶</span>
+              <div class="node-label">
+                <span class="node-text">File Upload</span>
+                <span class="node-path">POST /api/files/upload</span>
+                <span class="node-badge badge-api">API</span>
+              </div>
+            </div>
+            <div class="children">
+              <div class="tree-item feature">
+                <span class="toggle-icon">📤</span
+                ><span class="node-text">Upload Handler</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tree-node">
+            <div class="tree-item api">
+              <span class="toggle-icon">📜</span>
+              <div class="node-label">
+                <span class="node-text">Chat History</span>
+                <span class="node-path">GET /api/history</span>
+                <span class="node-badge badge-api">API</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tree-node">
+            <div class="tree-item api">
+              <span class="toggle-icon">📦</span>
+              <div class="node-label">
+                <span class="node-text">Orders</span>
+                <span class="node-path">GET /api/orders</span>
+                <span class="node-badge badge-api">API</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tree-node">
+            <div class="tree-item api" onclick="toggleNode(this)">
+              <span class="toggle-icon">▶</span>
+              <div class="node-label">
+                <span class="node-text">Products API</span>
+                <span class="node-path">/api/products</span>
+                <span class="node-badge badge-api">API</span>
+              </div>
+            </div>
+            <div class="children">
+              <div class="tree-item api">
+                <span class="toggle-icon">📋</span
+                ><span class="node-text">GET /api/products - List All</span>
+              </div>
+              <div class="tree-item api">
+                <span class="toggle-icon">✨</span
+                ><span class="node-text"
+                  >GET /api/products/explore - Featured</span
+                >
+              </div>
+              <div class="tree-item api">
+                <span class="toggle-icon">📂</span
+                ><span class="node-text"
+                  >GET /api/products/category/[category]</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Flows -->
+      <div class="flow-section">
+        <h3>🛍️ Customer Shopping Flow</h3>
+        <div class="flow-diagram">
+          <div class="flow-step">Home</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Browse/Search</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Product Detail</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Add to Cart</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Checkout</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Payment (Stripe)</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Congratulations</div>
+        </div>
+      </div>
+
+      <div class="flow-section">
+        <h3>🤖 AI-Assisted Shopping Flow</h3>
+        <div class="flow-diagram">
+          <div class="flow-step">Home (Chat Tab)</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">AI Conversation</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Product Recommendations</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Click Product</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Add to Cart</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Checkout</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Payment</div>
+        </div>
+      </div>
+
+      <div class="flow-section">
+        <h3>🏪 Merchant Management Flow</h3>
+        <div class="flow-diagram">
+          <div class="flow-step">CMS Landing</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Select Shop</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Dashboard</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Manage Products/Orders/Profile</div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <h3>📖 Legend</h3>
+        <div class="legend-items">
+          <div class="legend-item">
+            <div
+              class="legend-color"
+              style="background: #fef3c7; border-left: 4px solid #ffc107"
+            ></div>
+            <span>Protected Route (All routes require authentication)</span>
+          </div>
+          <div class="legend-item">
+            <div
+              class="legend-color"
+              style="background: #f0fff4; border-left: 4px solid #28a745"
+            ></div>
+            <span>Feature/Component</span>
+          </div>
+          <div class="legend-item">
+            <div
+              class="legend-color"
+              style="background: #e0f7ff; border-left: 4px solid #00f2fe"
+            ></div>
+            <span>API Endpoint</span>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>
+          🚀 Built with Next.js 14+ | 🔐 Clerk Auth | 💳 Stripe | 🤖 OpenRouter
+          AI
+        </p>
+        <p style="margin-top: 10px; font-size: 0.9rem">
+          Click on items with ▶ to expand/collapse
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      function toggleNode(element) {
+        const children = element.nextElementSibling;
+        const toggleIcon = element.querySelector(".toggle-icon");
+
+        if (children && children.classList.contains("children")) {
+          children.classList.toggle("show");
+          if (toggleIcon && toggleIcon.textContent === "▶") {
+            toggleIcon.classList.toggle("expanded");
+          }
+        }
+      }
+
+      // Add click animation
+      document.querySelectorAll(".tree-item").forEach((item) => {
+        item.addEventListener("click", function (e) {
+          this.style.transform = "scale(0.98)";
+          setTimeout(() => {
+            this.style.transform = "";
+          }, 100);
+        });
+      });
+    </script>
+  </body>
+</html>

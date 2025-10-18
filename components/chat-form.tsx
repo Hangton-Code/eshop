@@ -39,8 +39,8 @@ export const models = {
     name: "Gemini 2.5 Flash",
     description: "Generally Recommended",
   },
-  "deepseek/deepseek-chat-v3.1": {
-    name: "Deepseek V3.1",
+  "qwen/qwen3-vl-235b-a22b-instruct": {
+    name: "Qwen 3 VL",
     description: "Great model as well",
   },
 };
