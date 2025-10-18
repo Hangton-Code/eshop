@@ -5,7 +5,25 @@ import {
 } from "@/lib/db/queries";
 import { NextRequest, NextResponse } from "next/server";
 
-const categoriesAvailable = categories.map((v) => v.value);
+export const dynamic = "force-dynamic";
+
+const categoriesAvailable = [
+  "electronics",
+  "apparel",
+  "home_&_kitchen",
+  "books_&_media",
+  "sports_&_outdoors",
+  "health_&_household",
+  "beauty_&_personal_care",
+  "toys_&_games",
+  "automotive",
+  "pet_supplies",
+  "groceries",
+  "jewelry",
+  "handmade",
+  "industrial_&_scientific",
+  "other",
+];
 
 export async function GET(req: NextRequest) {
   try {

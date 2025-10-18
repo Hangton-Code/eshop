@@ -8,6 +8,8 @@ import { redisClient } from "@/lib/redis";
 import { Attachment } from "ai";
 import Stripe from "stripe";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const session_id = searchParams.get("session_id");

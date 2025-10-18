@@ -258,7 +258,11 @@ export function EditProductSheet({
             >
               {covers.map((attachment) => (
                 <div className="relative" key={attachment.url}>
-                  <PreviewAttachment attachment={attachment} />
+                  <PreviewAttachment
+                    attachment={attachment}
+                    enableDelete={false}
+                    handleDelete={() => {}}
+                  />
                   <Button
                     variant="outline"
                     size="icon"
@@ -272,6 +276,8 @@ export function EditProductSheet({
 
               {uploadQueue.map((filename) => (
                 <PreviewAttachment
+                  enableDelete={false}
+                  handleDelete={() => {}}
                   key={filename}
                   attachment={{
                     url: "",

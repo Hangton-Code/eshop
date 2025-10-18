@@ -22,8 +22,9 @@ import {
   validateRecaptchaResponse,
 } from "@/lib/recaptcha";
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+// Allow streaming responses up to 200 seconds
+export const maxDuration = 200;
+export const dynamic = "force-dynamic";
 
 const acceptedModelKeys = [
   "google/gemini-2.5-flash-preview-09-2025",

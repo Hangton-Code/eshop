@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { getProductsForExplore, getTotalProductCount } from "@/lib/db/queries";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

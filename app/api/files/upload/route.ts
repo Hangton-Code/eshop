@@ -8,6 +8,8 @@ import {
   validateRecaptchaResponse,
 } from "@/lib/recaptcha";
 
+export const dynamic = "force-dynamic";
+
 const FileSchema = z.object({
   file: z
     .instanceof(Blob)
