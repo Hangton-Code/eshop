@@ -273,6 +273,8 @@ export function AddProductSheet({
                   <PreviewAttachment
                     key={attachment.url}
                     attachment={attachment}
+                    enableDelete={false}
+                    handleDelete={() => {}}
                   />
                   <Button
                     variant="outline"
@@ -294,6 +296,8 @@ export function AddProductSheet({
                     contentType: "",
                   }}
                   isUploading={true}
+                  enableDelete={false}
+                  handleDelete={() => {}}
                 />
               ))}
             </div>
