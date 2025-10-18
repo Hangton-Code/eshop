@@ -1,6 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { GoogleTranslateScript } from "@/components/google-translate";
 
 export default async function CustomerLayout({
   children,
@@ -14,6 +15,7 @@ export default async function CustomerLayout({
         <SiteHeader />
         {children}
       </div>
+      <GoogleTranslateScript />
     </SidebarProvider>
   );
 }

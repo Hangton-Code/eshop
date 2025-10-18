@@ -8,6 +8,7 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const { category } = await params;
+  const decodedCategory = decodeURIComponent(category);
 
-  return <CategoryContent category={category} />;
+  return <CategoryContent category={decodedCategory} />;
 }

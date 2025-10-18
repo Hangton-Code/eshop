@@ -18,6 +18,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useUser } from "@clerk/nextjs";
 import { NavUser } from "./nav-user";
 import { SidebarSecondary } from "./sidebar-secondary";
+import { LanguageSelector } from "./language-selector";
 
 const data = {
   sidebarSecondary: [
@@ -84,6 +85,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarHistory userId={user.user?.id || null} />
+        <LanguageSelector />
         <SidebarSecondary />
       </SidebarContent>
 

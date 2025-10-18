@@ -33,7 +33,7 @@ export function CategoryContent({ category }: CategoryContentProps) {
   const PRODUCTS_PER_PAGE = 20;
 
   const categoryLabel =
-    categories.find((cat) => cat.value === category)?.label || category;
+    categories.find((v) => v.value === category)?.label || category;
 
   const loadProducts = useCallback(
     async (pageNum: number = 0, append: boolean = false) => {
@@ -42,7 +42,7 @@ export function CategoryContent({ category }: CategoryContentProps) {
       loadingRef.current = true;
       try {
         const response = await fetch(
-          `/api/products/category/${category}?page=${pageNum}&limit=${PRODUCTS_PER_PAGE}`
+          `/api/products/category?category=${category}&page=${pageNum}&limit=${PRODUCTS_PER_PAGE}`
         );
 
         if (response.ok) {
