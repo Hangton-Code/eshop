@@ -1,15 +1,11 @@
 "use server";
 
 import { db } from "@/db";
-import { CartItem } from "@/db/schema";
-import {
-  findCartItemByProductId,
-  getMerchantsByIds,
-  getProductById,
-} from "@/lib/db/queries";
+import { CartItem, Product, Merchant } from "@/db/schema";
+import { findCartItemByProductId, getProductById } from "@/lib/db/queries";
 import { generateUUID } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, getTableColumns } from "drizzle-orm";
 import { z } from "zod";
 
 export async function addItemToCart(productId: string, cartQuantity?: number) {
@@ -43,34 +39,19 @@ export async function getCartItems() {
     throw new Error("Unauthorized");
   }
 
-  const cartItems = await db
-    .select()
+  const result = await db
+    .select({
+      ...getTableColumns(CartItem),
+      product: getTableColumns(Product),
+      merchant: getTableColumns(Merchant),
+    })
     .from(CartItem)
+    .innerJoin(Product, eq(CartItem.productId, Product.id))
+    .innerJoin(Merchant, eq(Product.merchantId, Merchant.id))
     .where(eq(CartItem.userId, userId))
     .orderBy(CartItem.createdAt);
-  const cartItemsWithProduct = await Promise.all(
-    cartItems.map(async (item) => {
-      const product = await getProductById(item.productId);
-      return {
-        ...item,
-        product,
-      };
-    })
-  );
 
-  const merchantIds = cartItemsWithProduct.map(
-    (item) => item.product.merchantId
-  );
-  const uniqueMerchantIds = [...new Set(merchantIds)];
-
-  const merchants = await getMerchantsByIds(uniqueMerchantIds);
-
-  return cartItemsWithProduct.map((item) => ({
-    ...item,
-    merchant: merchants.find(
-      (merchant) => merchant.id === item.product.merchantId
-    ),
-  }));
+  return result;
 }
 
 export async function updateQuantity(id: string, quantity: number) {

@@ -7,6 +7,8 @@ import { Loader2 } from "lucide-react";
 import { Merchant } from "@/db/schema";
 import { categories } from "./cms/category-combobox";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/i18n/language-context";
+import { TranslationKey } from "@/lib/i18n/translations";
 
 interface ExploreProduct {
   id: string;
@@ -25,6 +27,29 @@ export function ExploreSection() {
   const [merchants, setMerchants] = useState<{ [key: string]: Merchant }>({});
   const loadingRef = useRef(false);
   const router = useRouter();
+  const { t } = useLanguage();
+
+  // Map category values to translation keys
+  const getCategoryTranslationKey = (value: string): TranslationKey => {
+    const keyMap: Record<string, TranslationKey> = {
+      electronics: "electronics",
+      apparel: "apparel",
+      "home_&_kitchen": "homeKitchen",
+      "books_&_media": "booksMedia",
+      "sports_&_outdoors": "sportsOutdoors",
+      "health_&_household": "healthHousehold",
+      "beauty_&_personal_care": "beautyPersonalCare",
+      "toys_&_games": "toysGames",
+      automotive: "automotive",
+      pet_supplies: "petSupplies",
+      groceries: "groceries",
+      jewelry: "jewelry",
+      handmade: "handmade",
+      "industrial_&_scientific": "industrialScientific",
+      other: "other",
+    };
+    return keyMap[value] || ("other" as TranslationKey);
+  };
 
   const PRODUCTS_PER_PAGE = 20;
 
@@ -81,9 +106,9 @@ export function ExploreSection() {
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">🎯 Browse By Categories</h2>
+        <h2 className="text-3xl font-bold mb-2">{t("browseCategories")}</h2>
         <p className="text-muted-foreground mb-6">
-          Click a category to start exploring now 🚀
+          {t("browseCategoriesSubtitle")}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {categories.map((category) => (
@@ -91,10 +116,12 @@ export function ExploreSection() {
               key={category.value}
               variant="outline"
               className="h-auto py-3 px-4 flex flex-col items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
-              onClick={() => router.push(`/category/${category.value}`)}
+              onClick={() =>
+                router.push(`/category/${encodeURIComponent(category.value)}`)
+              }
             >
               <span className="text-sm font-medium text-center">
-                {category.label}
+                {t(getCategoryTranslationKey(category.value))}
               </span>
             </Button>
           ))}
@@ -102,10 +129,13 @@ export function ExploreSection() {
       </div>
 
       <div className="mb-8 mt-12">
-        <h2 className="text-3xl font-bold mb-2">✨ Explore Products</h2>
+        <h2 className="text-3xl font-bold mb-2">{t("exploreProducts")}</h2>
         <p className="text-muted-foreground">
-          Discover <span className="text-primary font-semibold">amazing</span>{" "}
-          products from our merchants
+          {t("exploreProductsSubtitle")}{" "}
+          <span className="text-primary font-semibold">
+            {t("exploreProductsAmazing")}
+          </span>{" "}
+          {t("exploreProductsFrom")}
         </p>
       </div>
 
@@ -140,7 +170,7 @@ export function ExploreSection() {
         <div className="flex justify-center items-center py-8">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <span className="ml-2 text-muted-foreground">
-            Loading products...
+            {t("loadingProducts")}
           </span>
         </div>
       )}
@@ -148,14 +178,14 @@ export function ExploreSection() {
       {hasMore && !loadingRef.current && products.length > 0 && (
         <div className="flex justify-center py-8">
           <Button onClick={loadMore} size="lg">
-            Load More Products
+            {t("loadMoreProducts")}
           </Button>
         </div>
       )}
 
       {!hasMore && products.length > 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <p>You've seen all available products!</p>
+          <p>{t("allProductsViewed")}</p>
         </div>
       )}
     </div>

@@ -3,10 +3,10 @@
 import confetti from "canvas-confetti";
 import Link from "next/link";
 import { useEffect } from "react";
-
-//
+import { useLanguage } from "@/lib/i18n/language-context";
 
 export default function CongratulationsPage() {
+  const { t } = useLanguage();
   useEffect(() => {
     const duration = 5 * 1000;
     const animationEnd = Date.now() + duration;
@@ -40,17 +40,17 @@ export default function CongratulationsPage() {
     <div className="flex flex-col items-center justify-center h-screen space-y-20">
       <div className="space-y-3">
         <div className="text-4xl font-extrabold text-center">
-          Congratulations!
+          {t("congratulations")}
         </div>
         <div className="text-xl text-muted-foreground text-center">
-          Your order has been successfully placed.
+          {t("orderPlacedSuccess")}
         </div>
       </div>
       <div>
         <Link href="/orders" className="underline">
-          Click here
+          {t("clickHere")}
         </Link>{" "}
-        to view your order.
+        {t("toViewOrder")}
       </div>
     </div>
   );

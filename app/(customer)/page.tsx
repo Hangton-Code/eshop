@@ -12,8 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Highlighter } from "@/components/ui/highlighter";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { HyperText } from "@/components/ui/hyper-text";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 export default function Home() {
+  const { t } = useLanguage();
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const [textInput, setTextInput] = useState("");
 
@@ -100,15 +102,15 @@ export default function Home() {
           <HyperText className="text-5xl">EShop</HyperText>
         </div>
         <p className="text-lg text-primary text-center max-w-2xl">
-          Discover{" "}
+          {t("homeTagline1")}{" "}
           <Highlighter action="underline" color="#FF9800">
-            amazing products
+            {t("homeTagline2")}
           </Highlighter>{" "}
-          and get{" "}
+          {t("homeTagline3")}{" "}
           <Highlighter action="highlight" color="#ffdf20">
-            AI-powered
+            {t("homeTagline4")}
           </Highlighter>{" "}
-          shopping assistance 🫠
+          {t("homeTagline5")}
         </p>
       </div>
 
@@ -119,8 +121,8 @@ export default function Home() {
         className="w-full"
       >
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-          <TabsTrigger value="chat">💬 Chat</TabsTrigger>
-          <TabsTrigger value="explore">🧭 Explore</TabsTrigger>
+          <TabsTrigger value="chat">{t("chatTab")}</TabsTrigger>
+          <TabsTrigger value="explore">{t("exploreTab")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="chat" className="flex justify-center">
@@ -141,7 +143,7 @@ export default function Home() {
             />
             <div className="flex  justify-end">
               <p className="text-muted-foreground text-xs mt-2">
-                LLMs Inferencing powered by{" "}
+                {t("llmPoweredBy")}{" "}
                 <a
                   href="https://openrouter.ai"
                   target="_blank"

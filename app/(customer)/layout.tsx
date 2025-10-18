@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { GoogleTranslateScript } from "@/components/google-translate";
+import { LanguageProvider } from "@/lib/i18n/language-context";
 
 export default async function CustomerLayout({
   children,
@@ -9,13 +9,14 @@ export default async function CustomerLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider defaultOpen={true}>
-      <AppSidebar />
-      <div className="w-full">
-        <SiteHeader />
-        {children}
-      </div>
-      <GoogleTranslateScript />
-    </SidebarProvider>
+    <LanguageProvider>
+      <SidebarProvider defaultOpen={true}>
+        <AppSidebar />
+        <div className="w-full">
+          <SiteHeader />
+          {children}
+        </div>
+      </SidebarProvider>
+    </LanguageProvider>
   );
 }

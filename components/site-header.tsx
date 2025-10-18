@@ -14,10 +14,12 @@ import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
 import { CartSheet } from "./cart-sheet";
 import { Badge } from "./ui/badge";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 export function SiteHeader() {
   const { isMobile } = useSidebar();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [searchQuery, setSearchQuery] = useState("");
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,7 +62,7 @@ export function SiteHeader() {
             <form onSubmit={handleSearch}>
               <Input
                 className="w-full shadow-none"
-                placeholder="🔍 Perform Traditional Search"
+                placeholder={t("search")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

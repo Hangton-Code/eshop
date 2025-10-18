@@ -7,6 +7,8 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import { Merchant } from "@/db/schema";
 import { useRouter } from "next/navigation";
 import { categories } from "@/components/cms/category-combobox";
+import { useLanguage } from "@/lib/i18n/language-context";
+import { TranslationKey } from "@/lib/i18n/translations";
 
 interface CategoryProduct {
   id: string;
@@ -29,11 +31,33 @@ export function CategoryContent({ category }: CategoryContentProps) {
   const [merchants, setMerchants] = useState<{ [key: string]: Merchant }>({});
   const loadingRef = useRef(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   const PRODUCTS_PER_PAGE = 20;
 
-  const categoryLabel =
-    categories.find((v) => v.value === category)?.label || category;
+  // Map category values to translation keys
+  const getCategoryTranslationKey = (value: string): TranslationKey => {
+    const keyMap: Record<string, TranslationKey> = {
+      electronics: "electronics",
+      apparel: "apparel",
+      "home_&_kitchen": "homeKitchen",
+      "books_&_media": "booksMedia",
+      "sports_&_outdoors": "sportsOutdoors",
+      "health_&_household": "healthHousehold",
+      "beauty_&_personal_care": "beautyPersonalCare",
+      "toys_&_games": "toysGames",
+      automotive: "automotive",
+      pet_supplies: "petSupplies",
+      groceries: "groceries",
+      jewelry: "jewelry",
+      handmade: "handmade",
+      "industrial_&_scientific": "industrialScientific",
+      other: "other",
+    };
+    return keyMap[value] || ("other" as TranslationKey);
+  };
+
+  const categoryLabel = t(getCategoryTranslationKey(category));
 
   const loadProducts = useCallback(
     async (pageNum: number = 0, append: boolean = false) => {
@@ -42,7 +66,9 @@ export function CategoryContent({ category }: CategoryContentProps) {
       loadingRef.current = true;
       try {
         const response = await fetch(
-          `/api/products/category?category=${category}&page=${pageNum}&limit=${PRODUCTS_PER_PAGE}`
+          `/api/products/category?category=${encodeURIComponent(
+            category
+          )}&page=${pageNum}&limit=${PRODUCTS_PER_PAGE}`
         );
 
         if (response.ok) {
@@ -94,25 +120,25 @@ export function CategoryContent({ category }: CategoryContentProps) {
           onClick={() => router.push("/")}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
+          {t("backToHome")}
         </Button>
         <h1 className="text-4xl font-bold mb-2">{categoryLabel}</h1>
         <p className="text-muted-foreground">
-          Browse all products in {categoryLabel}
+          {t("browseAllProducts")} {categoryLabel}
         </p>
       </div>
 
       {products.length === 0 && !loadingRef.current && (
         <div className="text-center py-12">
           <p className="text-muted-foreground text-lg">
-            No products found in this category yet.
+            {t("noProductsFound")}
           </p>
           <Button
             variant="outline"
             className="mt-4"
             onClick={() => router.push("/")}
           >
-            Explore Other Categories
+            {t("exploreOtherCategories")}
           </Button>
         </div>
       )}
@@ -150,7 +176,7 @@ export function CategoryContent({ category }: CategoryContentProps) {
         <div className="flex justify-center items-center py-8">
           <Loader2 className="h-8 w-8 animate-spin" />
           <span className="ml-2 text-muted-foreground">
-            Loading products...
+            {t("loadingProducts")}
           </span>
         </div>
       )}
@@ -158,14 +184,14 @@ export function CategoryContent({ category }: CategoryContentProps) {
       {hasMore && !loadingRef.current && products.length > 0 && (
         <div className="flex justify-center py-8">
           <Button onClick={loadMore} size="lg">
-            Load More Products
+            {t("loadMoreProducts")}
           </Button>
         </div>
       )}
 
       {!hasMore && products.length > 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <p>You've seen all products in this category!</p>
+          <p>{t("allProductsViewed")}</p>
         </div>
       )}
     </div>

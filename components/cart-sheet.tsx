@@ -24,6 +24,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { RainbowButton } from "./magicui/rainbow-button";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 const getCart = async () => {
   const items = await getCartItems();
@@ -35,6 +36,7 @@ export function CartSheet() {
   const { mutate } = useSWRConfig();
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   const handleQuantityChange = async (id: string, quantity: number) => {
     try {
@@ -68,16 +70,16 @@ export function CartSheet() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Your Cart</SheetTitle>
+          <SheetTitle>{t("yourCart")}</SheetTitle>
           <SheetDescription>
-            {cart?.length ? `${cart.length} item(s)` : "Your cart is empty"}
+            {cart?.length ? `${cart.length} ${t("items")}` : t("emptyCart")}
           </SheetDescription>
         </SheetHeader>
         <div className="grid flex-1 auto-rows-min h-[calc(100vh-200px)] overflow-y-scroll gap-2 px-4 ">
           {cart?.map((item) => {
-            const cover = (
-              item.product.covers as Attachment[]
-            )[0] as Attachment | null;
+            const cover = item.product.covers
+              ? ((item.product.covers as Attachment[])[0] as Attachment | null)
+              : null;
             return (
               <div
                 key={item.id}
@@ -156,10 +158,10 @@ export function CartSheet() {
               setOpen(false);
             }}
           >
-            Check Out
+            {t("checkOut")}
           </RainbowButton>
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline">{t("close")}</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

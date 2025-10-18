@@ -18,7 +18,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useUser } from "@clerk/nextjs";
 import { NavUser } from "./nav-user";
 import { SidebarSecondary } from "./sidebar-secondary";
-import { LanguageSelector } from "./language-selector";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 const data = {
   sidebarSecondary: [
@@ -34,6 +34,7 @@ export function AppSidebar() {
   const router = useRouter();
   const { setOpenMobile } = useSidebar();
   const user = useUser();
+  const { t } = useLanguage();
   const userObj = {
     name: user.user?.fullName,
     email: user.user?.emailAddresses[0].emailAddress,
@@ -58,7 +59,7 @@ export function AppSidebar() {
               className="flex flex-row gap-3 items-center"
             >
               <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer select-none">
-                Ask AI
+                {t("askAI")}
               </span>
             </Link>
             {pathname !== "/" && (
@@ -77,7 +78,7 @@ export function AppSidebar() {
                     <PlusIcon />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent align="end">New Chat</TooltipContent>
+                <TooltipContent align="end">{t("newChat")}</TooltipContent>
               </Tooltip>
             )}
           </div>
@@ -85,7 +86,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarHistory userId={user.user?.id || null} />
-        <LanguageSelector />
+
         <SidebarSecondary />
       </SidebarContent>
 
