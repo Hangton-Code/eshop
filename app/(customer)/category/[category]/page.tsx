@@ -1,9 +1,11 @@
 import { CategoryContent } from "./content";
 
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }) {
-  return <CategoryContent category={params.category} />;
+  const { category } = await params;
+
+  return <CategoryContent category={category} />;
 }
