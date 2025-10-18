@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import { motion } from "motion/react";
 import { CartSheet } from "./cart-sheet";
+import { Badge } from "./ui/badge";
 
 export function SiteHeader() {
   const { isMobile } = useSidebar();
@@ -46,6 +47,7 @@ export function SiteHeader() {
         <Link className="flex gap-1.5 select-none max-md:hidden" href="/">
           <ScanLine width={22} />
           <h1 className="text-base font-medium">EShop</h1>
+          <Badge className="ml-0.5">#prototype</Badge>
         </Link>
 
         <AnimatePresence>

@@ -114,7 +114,7 @@ Focus on providing helpful, contextual responses to user queries. When appropria
         },
       }),
       showFoundProducts: tool({
-        description: "Display found products to user.",
+        description: "Display products found to user.",
         parameters: z.object({
           products: z.array(
             z.object({
@@ -134,20 +134,20 @@ Focus on providing helpful, contextual responses to user queries. When appropria
         },
       }),
       // Temporarily disabled to fix echoing issue
-      // provideSuggestedPrompts: tool({
-      //   description:
-      //     "Generate 2-3 helpful suggested prompts that will be displayed as clickable buttons for the user to continue the conversation. These prompts should be contextual and help guide the user towards making informed purchasing decisions.",
-      //   parameters: z.object({
-      //     prompts: z
-      //       .array(z.string())
-      //       .describe(
-      //         "Array of suggested prompt texts for the user to continue the conversation."
-      //       ),
-      //   }),
-      //   execute: async () => {
-      //     return "Suggested prompts are displayed to the user";
-      //   },
-      // }),
+      provideSuggestedPrompts: tool({
+        description:
+          "Generate 2-3 helpful suggested prompts that will be displayed as clickable buttons for the user to continue the conversation. These prompts should be contextual and help guide the user towards making informed purchasing decisions.",
+        parameters: z.object({
+          prompts: z
+            .array(z.string())
+            .describe(
+              "Array of suggested prompt texts for the user to continue the conversation."
+            ),
+        }),
+        execute: async () => {
+          return "Suggested prompts are displayed to the user";
+        },
+      }),
     },
     onFinish: async ({ response }) => {
       const assistantId = getTrailingMessageId({

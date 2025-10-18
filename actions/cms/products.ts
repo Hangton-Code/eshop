@@ -97,13 +97,8 @@ export async function deleteProduct(id: string) {
     throw new Error("Product not found");
   }
 
-  const merchant = await getMerchantById(product.merchantId);
-  if (!merchant) {
-    throw new Error("Merchant not found");
-  }
-
   const { userId } = await auth();
-  if (merchant.userId !== userId) {
+  if (product.merchant.userId !== userId) {
     throw new Error("Product not found");
   }
 

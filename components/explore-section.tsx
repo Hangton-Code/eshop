@@ -5,6 +5,9 @@ import ProductCard from "./product-card";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
 import { Merchant } from "@/db/schema";
+import { categories } from "./cms/category-combobox";
+import { useRouter } from "next/navigation";
+import { Highlighter } from "./ui/highlighter";
 
 interface ExploreProduct {
   id: string;
@@ -22,6 +25,7 @@ export function ExploreSection() {
   const [page, setPage] = useState(0);
   const [merchants, setMerchants] = useState<{ [key: string]: Merchant }>({});
   const loadingRef = useRef(false);
+  const router = useRouter();
 
   const PRODUCTS_PER_PAGE = 20;
 
@@ -78,9 +82,31 @@ export function ExploreSection() {
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Explore Products</h2>
+        <h2 className="text-3xl font-bold mb-2">🎯 Browse By Categories</h2>
+        <p className="text-muted-foreground mb-6">
+          Click a category to start exploring now 🚀
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          {categories.map((category) => (
+            <Button
+              key={category.value}
+              variant="outline"
+              className="h-auto py-3 px-4 flex flex-col items-center gap-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+              onClick={() => router.push(`/category/${category.value}`)}
+            >
+              <span className="text-sm font-medium text-center">
+                {category.label}
+              </span>
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-8 mt-12">
+        <h2 className="text-3xl font-bold mb-2">✨ Explore Products</h2>
         <p className="text-muted-foreground">
-          Discover amazing products from our merchants
+          Discover <span className="text-primary font-semibold">amazing</span>{" "}
+          products from our merchants
         </p>
       </div>
 
@@ -113,7 +139,7 @@ export function ExploreSection() {
 
       {loadingRef.current && (
         <div className="flex justify-center items-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <span className="ml-2 text-muted-foreground">
             Loading products...
           </span>

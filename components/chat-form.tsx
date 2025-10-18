@@ -144,6 +144,10 @@ export function ChatForm({
     [setAttachments]
   );
 
+  const removeAttachment = (url: string) => {
+    setAttachments((prev) => prev.filter((v) => v.url !== url));
+  };
+
   const submitForm = useCallback(async () => {
     if (!textInput.trim()) return;
 
@@ -174,7 +178,7 @@ export function ChatForm({
   }, [handleSubmit, attachments, generateToken, isAvailable, enableWebSearch]);
 
   return (
-    <Card className="relative p-4 pb-3 w-full max-w-3xl flex flex-col gap-4">
+    <Card className="relative px-4 pt-5 pb-3 w-full max-w-3xl flex flex-col gap-4.5">
       <input
         type="file"
         className="fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
@@ -190,7 +194,11 @@ export function ChatForm({
           className="flex flex-row gap-2 items-end"
         >
           {attachments.map((attachment) => (
-            <PreviewAttachment key={attachment.url} attachment={attachment} />
+            <PreviewAttachment
+              handleDelete={() => removeAttachment(attachment.url)}
+              key={attachment.url}
+              attachment={attachment}
+            />
           ))}
 
           {uploadQueue.map((filename) => (
@@ -202,6 +210,7 @@ export function ChatForm({
                 contentType: "",
               }}
               isUploading={true}
+              handleDelete={() => {}}
             />
           ))}
         </div>
@@ -225,6 +234,7 @@ export function ChatForm({
           >
             <Paperclip />
           </Button>
+          {/* {depricated web search button} */}
           {/* <Button
             variant={"outline"}
             onClick={() => setEnableWebSearch((prev) => !prev)}
@@ -240,8 +250,8 @@ export function ChatForm({
           </Button> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" variant={"secondary"} className="rounded-full">
-                <Globe /> All Sources
+              <Button size="sm" variant={"ghost"} className="rounded-full">
+                <Globe /> {enableWebSearch ? "All Sources" : "EShop Only"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent

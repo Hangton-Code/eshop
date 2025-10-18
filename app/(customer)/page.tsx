@@ -9,6 +9,9 @@ import { useEffect, useState } from "react";
 import RecaptchaAttribution from "@/components/recaptcha-attribution";
 import { ExploreSection } from "@/components/explore-section";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Highlighter } from "@/components/ui/highlighter";
+import { SparklesText } from "@/components/ui/sparkles-text";
+import { HyperText } from "@/components/ui/hyper-text";
 
 export default function Home() {
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
@@ -68,18 +71,24 @@ export default function Home() {
       <div
         className={cn(
           tabValue === "chat"
-            ? "flex flex-col items-center gap-8 mb-12"
+            ? "flex flex-col items-center gap-4 mb-16"
             : "hidden"
         )}
       >
-        <div className="flex items-center gap-2 select-none">
-          <ScanLine className="w-9 h-9" />
-          <h1 className="text-4xl font-medium underline underline-offset-4 decoration-dotted">
-            EShop
-          </h1>
+        <div className="flex items-center gap-3 select-none">
+          <ScanLine className="w-11 h-11" />
+          <HyperText className="text-5xl">EShop</HyperText>
         </div>
-        <p className="text-lg text-muted-foreground text-center max-w-2xl">
-          Discover amazing products and get AI-powered shopping assistance
+        <p className="text-lg text-primary text-center max-w-2xl">
+          Discover{" "}
+          <Highlighter action="underline" color="#FF9800">
+            amazing products
+          </Highlighter>{" "}
+          and get{" "}
+          <Highlighter action="highlight" color="#ffdf20">
+            AI-powered
+          </Highlighter>{" "}
+          shopping assistance 🫠
         </p>
       </div>
 
@@ -90,8 +99,8 @@ export default function Home() {
         className="w-full"
       >
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-          <TabsTrigger value="chat">Chat</TabsTrigger>
-          <TabsTrigger value="explore">Explore</TabsTrigger>
+          <TabsTrigger value="chat">💬 Chat</TabsTrigger>
+          <TabsTrigger value="explore">🧭 Explore</TabsTrigger>
         </TabsList>
 
         <TabsContent value="chat" className="flex justify-center">
@@ -110,7 +119,7 @@ export default function Home() {
             />
             <div className="flex  justify-end">
               <p className="text-muted-foreground text-xs mt-2">
-                LLMs Inferencing is Powered by{" "}
+                LLMs Inferencing powered by{" "}
                 <a
                   href="https://openrouter.ai"
                   target="_blank"

@@ -26,6 +26,7 @@ import { Markdown } from "@/components/markdown";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { categories } from "@/components/cms/category-combobox";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useState } from "react";
 import { addItemToCart } from "@/actions/cart";
 import { toast } from "sonner";
@@ -179,6 +180,90 @@ export function ProductPageContent({
               </Table>
             </TabsContent>
           </Tabs>
+        </div>
+      </div>
+
+      {/* Product Presentation (PPT) Placeholder */}
+      <div className="mt-8">
+        <p className="text-xl font-semibold mb-3">Product Presentation (PPT)</p>
+        <div className="w-full rounded-xl border bg-muted/30 p-6 text-muted-foreground">
+          <div className="h-56 w-full bg-background/60 rounded-lg border flex items-center justify-center">
+            <span className="text-sm">
+              This space is reserved for a product presentation (slides, specs,
+              demos).
+            </span>
+          </div>
+          <p className="text-xs mt-3">
+            Tip: You can embed slides, videos, or interactive demos here in the
+            future.
+          </p>
+        </div>
+      </div>
+
+      {/* Static Comments Section */}
+      <div className="mt-6">
+        <p className="text-xl font-semibold mb-3">
+          Recent comments from EShop shoppers
+        </p>
+        <div className="space-y-6">
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage alt="Mia K." />
+                  <AvatarFallback>MK</AvatarFallback>
+                </Avatar>
+                <div className="text-sm">
+                  <div className="font-medium">Mia K.</div>
+                  <div>2 days ago</div>
+                </div>
+              </div>
+              <div className="text-sm">★★★★★</div>
+            </div>
+            <p className="mt-3 text-base">
+              Matches the photos and feels well‑made. Been using it daily and no
+              issues so far. Shipping came a bit earlier than expected.
+            </p>
+          </div>
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage alt="Daniel C." />
+                  <AvatarFallback>DC</AvatarFallback>
+                </Avatar>
+                <div className="text-sm">
+                  <div className="font-medium">Daniel C.</div>
+                  <div>last week</div>
+                </div>
+              </div>
+              <div className="text-sm">★★★★☆</div>
+            </div>
+            <p className="mt-3 text-base">
+              Exactly as described. Good value for money. Packaging was okay —
+              nothing fancy, but everything arrived safe.
+            </p>
+          </div>
+          <div className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage alt="Aria W." />
+                  <AvatarFallback>AW</AvatarFallback>
+                </Avatar>
+                <div className="text-sm">
+                  <div className="font-medium">Aria W.</div>
+                  <div>3 weeks ago</div>
+                </div>
+              </div>
+              <div className="text-sm">★★★★☆</div>
+            </div>
+            <p className="mt-3 text-base">
+              Setup was straightforward and it worked out of the box. Wish the
+              instructions were a bit clearer, but it’s easy enough to figure
+              out.
+            </p>
+          </div>
         </div>
       </div>
     </div>

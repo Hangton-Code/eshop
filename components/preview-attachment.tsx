@@ -1,45 +1,57 @@
 import type { Attachment } from "ai";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon, X } from "lucide-react";
+import Image from "next/image";
+import { Button } from "./ui/button";
 
 export const PreviewAttachment = ({
   attachment,
   isUploading = false,
+  handleDelete,
 }: {
   attachment: Attachment;
   isUploading?: boolean;
+  handleDelete: () => void;
 }) => {
   const { name, url, contentType } = attachment;
 
   return (
-    <div data-testid="input-attachment-preview" className="flex flex-col gap-2">
-      <div className="w-20 h-16 aspect-video bg-muted rounded-md relative flex flex-col items-center justify-center">
-        {contentType ? (
-          contentType.startsWith("image") ? (
-            // NOTE: it is recommended to use next/image for images
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={url}
-              src={url}
-              alt={name ?? "An image attachment"}
-              className="rounded-md size-full object-cover"
-            />
-          ) : (
-            <div className="" />
-          )
+    <div className="group w-20 h-20 rounded-xl bg-muted overflow-hidden relative flex flex-col items-center justify-center">
+      {contentType ? (
+        contentType.startsWith("image") ? (
+          <Image
+            key={url}
+            src={url}
+            alt={name ?? "an image attachment"}
+            className="size-full object-cover"
+            width={80}
+            height={80}
+          />
         ) : (
           <div className="" />
-        )}
+        )
+      ) : (
+        <div className="" />
+      )}
 
-        {isUploading && (
-          <div
-            data-testid="input-attachment-loader"
-            className="animate-spin absolute text-zinc-500"
-          >
-            <LoaderIcon />
-          </div>
-        )}
-      </div>
-      <div className="text-xs text-zinc-500 max-w-16 truncate">{name}</div>
+      {isUploading && (
+        <div className="animate-spin absolute text-primary">
+          <LoaderIcon />
+        </div>
+      )}
+
+      {/* delete button */}
+      {!isUploading ? (
+        <Button
+          className="group-hover:flex hidden rounded-full absolute w-6 h-6 right-1 top-1"
+          variant={"secondary"}
+          size="sm"
+          onClick={handleDelete}
+        >
+          <X />
+        </Button>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

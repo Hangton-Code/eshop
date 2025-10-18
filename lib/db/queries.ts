@@ -263,6 +263,40 @@ export async function getTotalProductCount() {
   return result[0].count;
 }
 
+export async function getProductsByCategory(
+  category: string,
+  limit: number = 20,
+  offset: number = 0
+) {
+  const products = await db
+    .select({
+      id: Product.id,
+      name: Product.name,
+      price: Product.price,
+      brand: Product.brand,
+      covers: Product.covers,
+      merchantId: Product.merchantId,
+      merchantName: Merchant.name,
+    })
+    .from(Product)
+    .innerJoin(Merchant, eq(Product.merchantId, Merchant.id))
+    .where(and(eq(Product.hidden, false), eq(Product.category, category)))
+    .orderBy(desc(Product.createdAt))
+    .limit(limit)
+    .offset(offset);
+
+  return products;
+}
+
+export async function getTotalProductCountByCategory(category: string) {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(Product)
+    .where(and(eq(Product.hidden, false), eq(Product.category, category)));
+
+  return result[0].count;
+}
+
 export async function searchProductsByText(text: string) {
   const embedding = await getEmbeddings(text);
 
