@@ -100,12 +100,12 @@ export async function GET(request: NextRequest) {
     });
 
     // deduct inventory
-    const product = await getProductById(productId);
-    if (!product) throw new Error("Error: Please contact our sales");
+    const productData = await getProductById(productId);
+    if (!productData) throw new Error("Error: Please contact our sales");
     await db
       .update(Product)
       .set({
-        inventory: product.inventory - item.quantity,
+        inventory: productData.product.inventory - item.quantity,
       })
       .where(eq(Product.id, productId));
   }

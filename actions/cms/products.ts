@@ -62,8 +62,8 @@ export async function editProduct(body: z.infer<typeof editProductSchema>) {
     throw new Error("");
   }
 
-  const product = await getProductById(data.id);
-  if (!product || product.merchantId !== data.merchantId) {
+  const productData = await getProductById(data.id);
+  if (!productData || productData.product.merchantId !== data.merchantId) {
     throw new Error("Product not found");
   }
 

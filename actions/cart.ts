@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { CartItem, Product, Merchant } from "@/db/schema";
-import { findCartItemByProductId, getProductById } from "@/lib/db/queries";
+import { findCartItemByProductId } from "@/lib/db/queries";
 import { generateUUID } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq, getTableColumns } from "drizzle-orm";

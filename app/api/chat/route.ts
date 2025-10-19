@@ -173,14 +173,14 @@ Focus on providing helpful, contextual responses to user queries. When appropria
           // By default, only return orders that are still onboarding (not delivered yet)
           if (!includeAllOrders) {
             const onboardingOrders = allOrders.filter(
-              (order) =>
-                order.deliveryStatus === "ORDERED" ||
-                order.deliveryStatus === "SHIPPED"
+              (orderData) =>
+                orderData.Order.deliveryStatus === "ORDERED" ||
+                orderData.Order.deliveryStatus === "SHIPPED"
             );
-            return onboardingOrders;
+            return onboardingOrders.map((orderData) => orderData.Order);
           }
 
-          return allOrders;
+          return allOrders.map((orderData) => orderData.Order);
         },
       }),
       showUserOrders: tool({
