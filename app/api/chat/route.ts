@@ -56,16 +56,11 @@ export async function POST(req: Request) {
     }
   }
 
-  const chat = await getChatById(id);
-  if (!chat) {
-    await createChat(id, messages[0] as UIMessage);
-  }
-
   const message = messages[messages.length - 1] as UIMessage;
 
   // data validation
   const part = message.parts[0] as any;
-  if (typeof part.text !== "string") {
+  if (typeof part.text !== "string" || part.text === "") {
     return Response.json({ error: "Invalid message format" }, { status: 400 });
   }
 
@@ -77,6 +72,11 @@ export async function POST(req: Request) {
       },
       { status: 400 }
     );
+  }
+
+  const chat = await getChatById(id);
+  if (!chat) {
+    await createChat(id, messages[0] as UIMessage);
   }
 
   await saveMessages([

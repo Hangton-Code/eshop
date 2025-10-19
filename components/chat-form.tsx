@@ -209,6 +209,7 @@ export function ChatForm({
         multiple
         onChange={handleFileChange}
         tabIndex={-1}
+        accept="image/*"
       />
 
       {(attachments.length > 0 || uploadQueue.length > 0) && (

@@ -166,7 +166,6 @@ export async function createChat(id: string, initialMessage: UIMessage) {
       };
 
     const title = await generateTitleFromUserMessage(initialMessage);
-    console.log(title);
 
     // create chat
     const chats = await db

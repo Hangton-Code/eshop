@@ -58,7 +58,8 @@ export default function Home() {
     const defaultEnableWebSearch =
       window.localStorage.getItem("enableWebSearch");
     if (defaultEnableWebSearch) {
-      _setEnableWebSearch(Boolean(defaultEnableWebSearch));
+      console.log(defaultEnableWebSearch);
+      _setEnableWebSearch(defaultEnableWebSearch === "false" ? false : true);
     } else {
       window.localStorage.setItem("enableWebSearch", "true");
     }
@@ -67,7 +68,7 @@ export default function Home() {
     const defaultEnableOrderCheck =
       window.localStorage.getItem("enableOrderCheck");
     if (defaultEnableOrderCheck) {
-      _setEnableOrderCheck(Boolean(defaultEnableOrderCheck));
+      _setEnableOrderCheck(defaultEnableOrderCheck === "false" ? false : true);
     } else {
       window.localStorage.setItem("enableOrderCheck", "true");
     }
