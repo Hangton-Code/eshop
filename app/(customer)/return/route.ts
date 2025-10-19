@@ -96,6 +96,8 @@ export async function GET(request: NextRequest) {
       productDetails: {
         name: item.product.name,
         pictureUrl: covers[0] ? covers[0].url : undefined,
+        brand: item.product.brand,
+        description: item.product.description,
       },
     });
 

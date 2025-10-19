@@ -35,6 +35,8 @@ const OrderDisplay = z.object({
   productDetails: z.object({
     name: z.string(),
     pictureUrl: z.string().optional(),
+    brand: z.string().optional(),
+    description: z.string().optional(),
   }),
   quantity: z.number(),
   pricePerUnit: z.number(),

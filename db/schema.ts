@@ -122,6 +122,8 @@ export const Order = pgTable(
 export type ProductDetails = {
   name: string;
   pictureUrl?: string;
+  brand?: string;
+  description?: string;
 };
 
 export type Order = InferSelectModel<typeof Order>;
