@@ -1,5 +1,4 @@
-import { Merchant } from "@/db/schema";
-import { getMerchantsByIds, getOrdersByCustomerId } from "@/lib/db/queries";
+import { getOrdersByCustomerId } from "@/lib/db/queries";
 import { auth } from "@clerk/nextjs/server";
 import { OrdersContent } from "@/components/orders-content";
 
@@ -11,14 +10,5 @@ export default async function MyOrdersPage() {
 
   const myOrders = await getOrdersByCustomerId(userId);
 
-  // get all merchant's ids from the joined Product table
-  const merchantIds = myOrders.map((order) => order.Product.merchantId);
-  const uniqueMerchantIds = [...new Set(merchantIds)];
-  const merchants = await getMerchantsByIds(uniqueMerchantIds);
-  const merchantMap = merchants.reduce((acc, merchant) => {
-    acc[merchant.id] = merchant;
-    return acc;
-  }, {} as { [key: string]: Merchant });
-
-  return <OrdersContent myOrders={myOrders} merchantMap={merchantMap} />;
+  return <OrdersContent myOrders={myOrders} />;
 }

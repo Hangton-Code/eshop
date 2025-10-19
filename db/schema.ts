@@ -124,6 +124,8 @@ export type ProductDetails = {
   pictureUrl?: string;
   brand?: string;
   description?: string;
+  merchantId?: string;
+  merchantName?: string;
 };
 
 export type Order = InferSelectModel<typeof Order>;

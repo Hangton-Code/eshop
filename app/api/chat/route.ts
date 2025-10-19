@@ -173,14 +173,14 @@ Focus on providing helpful, contextual responses to user queries. When appropria
           // By default, only return orders that are still onboarding (not delivered yet)
           if (!includeAllOrders) {
             const onboardingOrders = allOrders.filter(
-              (orderData) =>
-                orderData.Order.deliveryStatus === "ORDERED" ||
-                orderData.Order.deliveryStatus === "SHIPPED"
+              (order) =>
+                order.deliveryStatus === "ORDERED" ||
+                order.deliveryStatus === "SHIPPED"
             );
-            return onboardingOrders.map((orderData) => orderData.Order);
+            return onboardingOrders;
           }
 
-          return allOrders.map((orderData) => orderData.Order);
+          return allOrders;
         },
       }),
       showUserOrders: tool({
@@ -194,6 +194,8 @@ Focus on providing helpful, contextual responses to user queries. When appropria
                 pictureUrl: z.string().optional(),
                 brand: z.string().optional(),
                 description: z.string().optional(),
+                merchantId: z.string().optional(),
+                merchantName: z.string().optional(),
               }),
               quantity: z.number(),
               pricePerUnit: z.number(),

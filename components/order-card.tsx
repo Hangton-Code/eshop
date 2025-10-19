@@ -1,17 +1,11 @@
-import { Merchant, Order, Product, ProductDetails } from "@/db/schema";
+import { Order, ProductDetails } from "@/db/schema";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
-export function OrderCard({
-  orderData,
-  merchantMap,
-}: {
-  orderData: { Order: Order; Product: Product };
-  merchantMap: Record<string, Merchant>;
-}) {
-  const order = orderData.Order;
-  const product = orderData.Product;
-  const merchantId = product.merchantId;
+export function OrderCard({ order }: { order: Order }) {
+  const productDetails = order.productDetails as ProductDetails;
+  const merchantId = productDetails.merchantId;
+  const merchantName = productDetails.merchantName;
 
   return (
     <div
@@ -20,8 +14,8 @@ export function OrderCard({
     >
       <img
         className="w-[20%] max-w-52 aspect-square object-contain bg-background rounded-md"
-        src={(order.productDetails as ProductDetails).pictureUrl}
-        alt={(order.productDetails as ProductDetails).name}
+        src={productDetails.pictureUrl}
+        alt={productDetails.name}
       />
       <div className="grow flex justify-between py-2">
         <div className="space-y-2">
@@ -38,18 +32,20 @@ export function OrderCard({
               href={`/product/${order.productId}`}
             >
               <p className="w-full max-w-120 truncate">
-                {(order.productDetails as ProductDetails).name}{" "}
+                {productDetails.name}{" "}
               </p>
             </Link>
-            <p className="text-sm group">
-              From{" "}
-              <Link
-                className="group-hover:underline"
-                href={`/merchant/${merchantId}`}
-              >
-                {merchantMap[merchantId]?.name}
-              </Link>
-            </p>
+            {merchantId && merchantName && (
+              <p className="text-sm group">
+                From{" "}
+                <Link
+                  className="group-hover:underline"
+                  href={`/merchant/${merchantId}`}
+                >
+                  {merchantName}
+                </Link>
+              </p>
+            )}
           </div>
           <div>
             <p className="leading-snug">

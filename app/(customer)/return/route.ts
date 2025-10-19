@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getOrdersByPaymentId, getProductById } from "@/lib/db/queries";
-import { CartItem, Order, Product } from "@/db/schema";
+import { CartItem, Merchant, Order, Product } from "@/db/schema";
 import { db } from "@/db";
 import { and, eq, inArray } from "drizzle-orm";
 import { NextRequest } from "next/server";
@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
     userId: string;
     cartItems: (CartItem & {
       product: Product;
+      merchant: Merchant;
     })[];
   };
   if (!metadata || !metadata.cartItems || !metadata.userId)
@@ -98,6 +99,8 @@ export async function GET(request: NextRequest) {
         pictureUrl: covers[0] ? covers[0].url : undefined,
         brand: item.product.brand,
         description: item.product.description,
+        merchantId: item.merchant.id,
+        merchantName: item.merchant.name,
       },
     });
 

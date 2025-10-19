@@ -386,7 +386,6 @@ export async function getOrdersByCustomerId(customerId: string) {
   return await db
     .select()
     .from(Order)
-    .innerJoin(Product, eq(Order.productId, Product.id))
     .where(eq(Order.customerId, customerId))
     .orderBy(desc(Order.createdAt));
 }

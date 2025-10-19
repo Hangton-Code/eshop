@@ -1,27 +1,26 @@
 "use client";
 
-import { Merchant, Order, Product } from "@/db/schema";
+import { Order } from "@/db/schema";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrderCard } from "@/components/order-card";
 import { useLanguage } from "@/lib/i18n/language-context";
 
 interface OrdersContentProps {
-  myOrders: { Order: Order; Product: Product }[];
-  merchantMap: { [key: string]: Merchant };
+  myOrders: Order[];
 }
 
-export function OrdersContent({ myOrders, merchantMap }: OrdersContentProps) {
+export function OrdersContent({ myOrders }: OrdersContentProps) {
   const { t } = useLanguage();
 
   // categorize orders by status
-  const ordersByStatus = myOrders.reduce((acc, orderData) => {
-    const status = orderData.Order.deliveryStatus;
+  const ordersByStatus = myOrders.reduce((acc, order) => {
+    const status = order.deliveryStatus;
     if (!acc[status]) {
       acc[status] = [];
     }
-    acc[status].push(orderData);
+    acc[status].push(order);
     return acc;
-  }, {} as { [key: string]: { Order: Order; Product: Product }[] });
+  }, {} as { [key: string]: Order[] });
 
   return (
     <div className="flex pb-25 pt-25  flex-col w-full max-w-[1000px] space-y-8 mx-auto px-10 max-md:pt-20 max-md:px-5">
@@ -60,39 +59,23 @@ export function OrdersContent({ myOrders, merchantMap }: OrdersContentProps) {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="ORDERED" className="mt-2 space-y-2">
-          {ordersByStatus.ORDERED?.map((orderData) => (
-            <OrderCard
-              key={orderData.Order.id}
-              orderData={orderData}
-              merchantMap={merchantMap}
-            />
+          {ordersByStatus.ORDERED?.map((order) => (
+            <OrderCard key={order.id} order={order} />
           ))}
         </TabsContent>
         <TabsContent value="SHIPPED" className="mt-2 space-y-2">
-          {ordersByStatus.SHIPPED?.map((orderData) => (
-            <OrderCard
-              key={orderData.Order.id}
-              orderData={orderData}
-              merchantMap={merchantMap}
-            />
+          {ordersByStatus.SHIPPED?.map((order) => (
+            <OrderCard key={order.id} order={order} />
           ))}
         </TabsContent>
         <TabsContent value="DELIVERED" className="mt-2 space-y-2">
-          {ordersByStatus.DELIVERED?.map((orderData) => (
-            <OrderCard
-              key={orderData.Order.id}
-              orderData={orderData}
-              merchantMap={merchantMap}
-            />
+          {ordersByStatus.DELIVERED?.map((order) => (
+            <OrderCard key={order.id} order={order} />
           ))}
         </TabsContent>
         <TabsContent value="CANCELED" className="mt-2 space-y-2">
-          {ordersByStatus.CANCELED?.map((orderData) => (
-            <OrderCard
-              key={orderData.Order.id}
-              orderData={orderData}
-              merchantMap={merchantMap}
-            />
+          {ordersByStatus.CANCELED?.map((order) => (
+            <OrderCard key={order.id} order={order} />
           ))}
         </TabsContent>
       </Tabs>

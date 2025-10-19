@@ -27,6 +27,12 @@ export const translations = {
     exploreProductsAmazing: "amazing",
     exploreProductsFrom: "products from our merchants",
 
+    // Merchant Banner
+    becomeMerchant: "Become a Merchant Today!",
+    becomeMerchantDesc:
+      "Start selling your products and reach thousands of customers",
+    visitCMS: "Visit CMS",
+
     // Categories
     electronics: "Electronics",
     apparel: "Apparel",
@@ -146,6 +152,11 @@ export const translations = {
     exploreProductsAmazing: "精彩的",
     exploreProductsFrom: "来自我们商家的产品",
 
+    // Merchant Banner
+    becomeMerchant: "立即开店！",
+    becomeMerchantDesc: "开始销售您的产品，触达客户数千",
+    visitCMS: "访问CMS",
+
     // Categories
     electronics: "电子产品",
     apparel: "服装",
@@ -262,6 +273,11 @@ export const translations = {
     exploreProductsSubtitle: "發現",
     exploreProductsAmazing: "精彩的",
     exploreProductsFrom: "來自我們商家的產品",
+
+    // Merchant Banner
+    becomeMerchant: "立即開店！",
+    becomeMerchantDesc: "開始銷售您的產品，觸達客戶數千",
+    visitCMS: "訪問CMS",
 
     // Categories
     electronics: "電子產品",

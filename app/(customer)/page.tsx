@@ -13,6 +13,9 @@ import { Highlighter } from "@/components/ui/highlighter";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { HyperText } from "@/components/ui/hyper-text";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { Button } from "@/components/ui/button";
+import { Store, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   const { t } = useLanguage();
@@ -84,86 +87,117 @@ export default function Home() {
   };
 
   return (
-    <div
-      className={cn(
-        `h-full container mx-auto px-4 py-15 transition-all`,
-        tabValue === "chat" ? `flex justify-center flex-col` : "py-30"
-      )}
-    >
-      <div
-        className={cn(
-          tabValue === "chat"
-            ? "flex flex-col items-center gap-4 mb-16"
-            : "hidden"
-        )}
-      >
-        <div className="flex items-center gap-3 select-none">
-          <ScanLine className="w-11 h-11" />
-          <HyperText className="text-5xl">EShop</HyperText>
+    <div className="relative h-full">
+      <div className="absolute top-15 left-0 right-0 z-10 w-full border-b bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-yellow-500/10 border-orange-300/50 dark:border-orange-700/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-orange-500/20">
+                <Store className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sm">{t("becomeMerchant")}</h3>
+                <p className="text-xs text-muted-foreground hidden sm:block">
+                  {t("becomeMerchantDesc")}
+                </p>
+              </div>
+            </div>
+            <Link href="/cms">
+              <Button
+                size="sm"
+                className="bg-orange-600 hover:bg-orange-700 text-white text-xs"
+              >
+                {t("visitCMS")}
+                <ArrowRight className="ml-1.5 w-3 h-3" />
+              </Button>
+            </Link>
+          </div>
         </div>
-        <p className="text-lg text-primary text-center max-w-2xl">
-          {t("homeTagline1")}{" "}
-          <Highlighter action="underline" color="#FF9800">
-            {t("homeTagline2")}
-          </Highlighter>{" "}
-          {t("homeTagline3")}{" "}
-          <Highlighter action="highlight" color="#ffdf20">
-            {t("homeTagline4")}
-          </Highlighter>{" "}
-          {t("homeTagline5")}
-        </p>
       </div>
 
-      <Tabs
-        defaultValue="chat"
-        value={tabValue}
-        onValueChange={setTabValue}
-        className="w-full"
+      <div
+        className={cn(
+          `h-full container mx-auto px-4 transition-all`,
+          tabValue === "chat"
+            ? `pt-[108px] flex justify-center flex-col`
+            : "pt-[108px] py-30"
+        )}
       >
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-          <TabsTrigger value="chat">{t("chatTab")}</TabsTrigger>
-          <TabsTrigger value="explore">{t("exploreTab")}</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="chat" className="flex justify-center">
-          <div className="max-w-[700px] w-full">
-            <ChatForm
-              handleSubmit={handleSubmit}
-              textInput={textInput}
-              setTextInput={setTextInput}
-              attachments={attachments}
-              setAttachments={setAttachments}
-              status="ready"
-              enableWebSearch={enableWebSearch}
-              setEnableWebSearch={setEnableWebSearch}
-              enableOrderCheck={enableOrderCheck}
-              setEnableOrderCheck={setEnableOrderCheck}
-              model={model}
-              setModel={setModel}
-            />
-            <div className="flex  justify-end">
-              <p className="text-muted-foreground text-xs mt-2">
-                {t("llmPoweredBy")}{" "}
-                <a
-                  href="https://openrouter.ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  OpenRouter
-                </a>
-              </p>
-            </div>
+        <div
+          className={cn(
+            tabValue === "chat"
+              ? "flex flex-col items-center gap-4 mb-16"
+              : "hidden"
+          )}
+        >
+          <div className="flex items-center gap-3 select-none">
+            <ScanLine className="w-11 h-11" />
+            <HyperText className="text-5xl">EShop</HyperText>
           </div>
-        </TabsContent>
+          <p className="text-lg text-primary text-center max-w-2xl">
+            {t("homeTagline1")}{" "}
+            <Highlighter action="underline" color="#FF9800">
+              {t("homeTagline2")}
+            </Highlighter>{" "}
+            {t("homeTagline3")}{" "}
+            <Highlighter action="highlight" color="#ffdf20">
+              {t("homeTagline4")}
+            </Highlighter>{" "}
+            {t("homeTagline5")}
+          </p>
+        </div>
 
-        <TabsContent value="explore" className="mt-8">
-          <ExploreSection />
-        </TabsContent>
-      </Tabs>
+        <Tabs
+          defaultValue="chat"
+          value={tabValue}
+          onValueChange={setTabValue}
+          className="w-full"
+        >
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+            <TabsTrigger value="chat">{t("chatTab")}</TabsTrigger>
+            <TabsTrigger value="explore">{t("exploreTab")}</TabsTrigger>
+          </TabsList>
 
-      <div className="mt-16">
-        <RecaptchaAttribution />
+          <TabsContent value="chat" className="flex justify-center">
+            <div className="max-w-[700px] w-full">
+              <ChatForm
+                handleSubmit={handleSubmit}
+                textInput={textInput}
+                setTextInput={setTextInput}
+                attachments={attachments}
+                setAttachments={setAttachments}
+                status="ready"
+                enableWebSearch={enableWebSearch}
+                setEnableWebSearch={setEnableWebSearch}
+                enableOrderCheck={enableOrderCheck}
+                setEnableOrderCheck={setEnableOrderCheck}
+                model={model}
+                setModel={setModel}
+              />
+              <div className="flex  justify-end">
+                <p className="text-muted-foreground text-xs mt-2">
+                  {t("llmPoweredBy")}{" "}
+                  <a
+                    href="https://openrouter.ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    OpenRouter
+                  </a>
+                </p>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="explore" className="mt-8">
+            <ExploreSection />
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-16">
+          <RecaptchaAttribution />
+        </div>
       </div>
     </div>
   );
