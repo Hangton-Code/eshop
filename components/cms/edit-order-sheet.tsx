@@ -30,7 +30,6 @@ import { editOrder } from "@/actions/cms/orders";
 import { Switch } from "../ui/switch";
 
 type EditOrderSheetProps = {
-  merchantId: string;
   order: Order;
   open: boolean;
   setOpen: (open: boolean) => void;

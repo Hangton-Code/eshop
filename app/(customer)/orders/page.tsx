@@ -11,8 +11,8 @@ export default async function MyOrdersPage() {
 
   const myOrders = await getOrdersByCustomerId(userId);
 
-  // get all merchant's ids
-  const merchantIds = myOrders.map((order) => order.merchantId);
+  // get all merchant's ids from the joined Product table
+  const merchantIds = myOrders.map((order) => order.Product.merchantId);
   const uniqueMerchantIds = [...new Set(merchantIds)];
   const merchants = await getMerchantsByIds(uniqueMerchantIds);
   const merchantMap = merchants.reduce((acc, merchant) => {

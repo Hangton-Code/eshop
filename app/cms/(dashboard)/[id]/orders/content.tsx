@@ -91,7 +91,7 @@ export function PageContent({ id }: { id: string }) {
         </p>
       </div>
 
-      <OrderTable data={betterOrders} merchantId={id} />
+      <OrderTable data={betterOrders} />
     </motion.div>
   );
 }

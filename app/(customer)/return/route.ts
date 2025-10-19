@@ -89,7 +89,6 @@ export async function GET(request: NextRequest) {
       customerId: metadata.userId,
       deliveryAddress: collected_information?.shipping_details?.address,
       deliveryStatus: "ORDERED",
-      merchantId: item.product.merchantId,
       receiverName: collected_information?.shipping_details?.name,
       receiverPhoneNo: customer_details?.phone || "",
       settled: true,

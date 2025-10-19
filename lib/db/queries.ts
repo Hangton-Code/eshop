@@ -365,7 +365,8 @@ export async function getOrdersByMerchantId(
   return await db
     .select()
     .from(Order)
-    .innerJoin(Merchant, eq(Order.merchantId, Merchant.id))
+    .innerJoin(Product, eq(Order.productId, Product.id))
+    .innerJoin(Merchant, eq(Product.merchantId, Merchant.id))
     .where(and(eq(Merchant.id, merchantId), eq(Merchant.userId, userId)))
     .orderBy(desc(Order.createdAt));
 }
@@ -375,7 +376,8 @@ export async function getOrderById(orderId: number, userId: string) {
     await db
       .select()
       .from(Order)
-      .innerJoin(Merchant, eq(Order.merchantId, Merchant.id))
+      .innerJoin(Product, eq(Order.productId, Product.id))
+      .innerJoin(Merchant, eq(Product.merchantId, Merchant.id))
       .where(and(eq(Order.id, orderId), eq(Merchant.userId, userId)))
   )[0];
 }
@@ -384,6 +386,7 @@ export async function getOrdersByCustomerId(customerId: string) {
   return await db
     .select()
     .from(Order)
+    .innerJoin(Product, eq(Order.productId, Product.id))
     .where(eq(Order.customerId, customerId))
     .orderBy(desc(Order.createdAt));
 }
@@ -395,8 +398,9 @@ export async function getTotalRevenueByMerchantId(merchantId: string) {
       netTotal: sql<number>`sum(${Order.netTotal})`,
     })
     .from(Order)
-    .where(eq(Order.merchantId, merchantId))
-    .groupBy(Order.merchantId);
+    .innerJoin(Product, eq(Order.productId, Product.id))
+    .where(eq(Product.merchantId, merchantId))
+    .groupBy(Product.merchantId);
 }
 
 export async function getNumberOfCustomersByMerchantId(merchantId: string) {
@@ -404,7 +408,8 @@ export async function getNumberOfCustomersByMerchantId(merchantId: string) {
     await db
       .select({})
       .from(Order)
-      .where(eq(Order.merchantId, merchantId))
+      .innerJoin(Product, eq(Order.productId, Product.id))
+      .where(eq(Product.merchantId, merchantId))
       .groupBy(Order.customerId)
   ).length;
 }

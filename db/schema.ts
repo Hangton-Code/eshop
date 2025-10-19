@@ -12,16 +12,19 @@ import {
   integer,
   vector,
   unique,
-  uniqueIndex,
   index,
 } from "drizzle-orm/pg-core";
 
-export const Chat = pgTable("Chat", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  userId: varchar("user_id", { length: 255 }),
-  title: varchar("title", { length: 255 }),
-});
+export const Chat = pgTable(
+  "Chat",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    userId: varchar("user_id", { length: 255 }),
+    title: varchar("title", { length: 255 }),
+  },
+  (table) => [index("chat_user_id_index").on(table.userId)]
+);
 
 export type Chat = InferSelectModel<typeof Chat>;
 
@@ -40,17 +43,19 @@ export const Message = pgTable(
   (table) => [index("chat_id_index").on(table.chatId)]
 );
 
-// CMS System
-
-export const Merchant = pgTable("Merchant", {
-  id: uuid("merchant_id").primaryKey(),
-  userId: varchar("user_id", { length: 255 }).notNull(),
-  pictureUrl: text("picture_url"),
-  bannerUrl: text("banner_url"),
-  name: varchar("name", { length: 255 }).unique().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  description: text("description").notNull(),
-});
+export const Merchant = pgTable(
+  "Merchant",
+  {
+    id: uuid("merchant_id").primaryKey(),
+    userId: varchar("user_id", { length: 255 }).notNull(),
+    pictureUrl: text("picture_url"),
+    bannerUrl: text("banner_url"),
+    name: varchar("name", { length: 255 }).unique().notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    description: text("description").notNull(),
+  },
+  (table) => [index("merchant_user_id_index").on(table.userId)]
+);
 
 export type Merchant = InferSelectModel<typeof Merchant>;
 
@@ -77,20 +82,16 @@ export const Product = pgTable(
   (table) => [
     unique("code_merchant_id_unique").on(table.code, table.merchantId),
     index("merchant_id_index").on(table.merchantId),
+    index("product_category_index").on(table.category),
   ]
 );
 
 export type Product = InferSelectModel<typeof Product>;
 
-// --- Order System
-
 export const Order = pgTable(
   "Order",
   {
     id: serial("id").primaryKey(),
-    merchantId: uuid("merchant_id")
-      .notNull()
-      .references(() => Merchant.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     customerId: varchar("customer_id", { length: 255 }).notNull(),
     productId: uuid("product_id")
@@ -113,8 +114,8 @@ export const Order = pgTable(
     stripePaymentId: varchar("stripe_payment_id", { length: 255 }),
   },
   (table) => [
-    index("merchant_id_index").on(table.merchantId),
     index("customer_id_index").on(table.customerId),
+    index("product_id_index").on(table.productId),
   ]
 );
 
@@ -124,16 +125,6 @@ export type ProductDetails = {
 };
 
 export type Order = InferSelectModel<typeof Order>;
-
-// export const AddressPrefill = pgTable("AddressPrefill", {
-//   id: serial("id").primaryKey(),
-//   userId: varchar("user_id", { length: 255 }).notNull(),
-//   isDefault: boolean("default").default(false).notNull(),
-//   receiverName: varchar("receiver_name", { length: 255 }).notNull(),
-//   address: text("address").notNull(),
-//   receiverPhoneNo: varchar("receiver_phone_no", { length: 20 }).notNull(),
-//   badges: json("badges"),
-// });
 
 export type Message = InferSelectModel<typeof Message>;
 

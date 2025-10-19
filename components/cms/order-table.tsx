@@ -300,7 +300,6 @@ const columns: ColumnDef<Order & { product?: Product }>[] = [
           </AlertDialog> */}
           <EditOrderSheet
             order={row.original}
-            merchantId={row.original.merchantId}
             open={sheetOpen}
             setOpen={setSheetOpen}
           />
@@ -338,7 +337,6 @@ export function OrderTable({
   data,
 }: {
   data: (Order & { product?: Product })[];
-  merchantId: string;
 }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =

@@ -1,14 +1,18 @@
-import { Merchant, Order, ProductDetails } from "@/db/schema";
+import { Merchant, Order, Product, ProductDetails } from "@/db/schema";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
 export function OrderCard({
-  order,
+  orderData,
   merchantMap,
 }: {
-  order: Order;
+  orderData: { Order: Order; Product: Product };
   merchantMap: Record<string, Merchant>;
 }) {
+  const order = orderData.Order;
+  const product = orderData.Product;
+  const merchantId = product.merchantId;
+
   return (
     <div
       key={order.id}
@@ -41,9 +45,9 @@ export function OrderCard({
               From{" "}
               <Link
                 className="group-hover:underline"
-                href={`/merchant/${order.merchantId}`}
+                href={`/merchant/${merchantId}`}
               >
-                {merchantMap[order.merchantId]?.name}
+                {merchantMap[merchantId]?.name}
               </Link>
             </p>
           </div>
