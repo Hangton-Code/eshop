@@ -42,3 +42,7 @@ export const convertToActualPathInCMS = ({
 }) => {
   return `/cms/${merchantId}/${path}`;
 };
+
+export const wordCount = (v: string) => {
+  return v.trim().split(/\s+/).filter(Boolean).length;
+};

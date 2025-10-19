@@ -7,7 +7,7 @@ import {
   searchProductsByText,
   getOrdersByCustomerId,
 } from "@/lib/db/queries";
-import { generateUUID, getTrailingMessageId } from "@/lib/utils";
+import { generateUUID, getTrailingMessageId, wordCount } from "@/lib/utils";
 import { auth } from "@clerk/nextjs/server";
 import {
   appendResponseMessages,
@@ -62,6 +62,22 @@ export async function POST(req: Request) {
   }
 
   const message = messages[messages.length - 1] as UIMessage;
+
+  // data validation
+  const part = message.parts[0] as any;
+  if (typeof part.text !== "string") {
+    return Response.json({ error: "Invalid message format" }, { status: 400 });
+  }
+
+  const messageWordCount = wordCount(part.text);
+  if (messageWordCount > 5000) {
+    return Response.json(
+      {
+        error: `Message is too long. Maximum 5000 words allowed. Your message has ${messageWordCount} words.`,
+      },
+      { status: 400 }
+    );
+  }
 
   await saveMessages([
     {

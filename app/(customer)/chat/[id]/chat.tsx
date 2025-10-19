@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
 import { getChatHistoryPaginationKey } from "@/components/sidebar-history";
+import { toast } from "sonner";
 
 type ChatProps = {
   id: string;
@@ -36,6 +37,17 @@ export function Chat({ id, initialMessages }: ChatProps) {
   const { messages, input, setInput, append, status } = useChat({
     id,
     initialMessages,
+    onError: (error) => {
+      console.error("Chat error:", error);
+      // Try to parse the error message from the response
+      try {
+        const errorMessage =
+          error.message || "An error occurred while sending your message.";
+        toast.error(errorMessage);
+      } catch {
+        toast.error("An error occurred while sending your message.");
+      }
+    },
   });
 
   const {

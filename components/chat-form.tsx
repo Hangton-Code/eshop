@@ -156,6 +156,15 @@ export function ChatForm({
   const submitForm = useCallback(async () => {
     if (!textInput.trim()) return;
 
+    // Validate word count (max 5000 words)
+    const wordCount = textInput.trim().split(/\s+/).filter(Boolean).length;
+    if (wordCount > 5000) {
+      toast.error(
+        `Message is too long. Maximum 5000 words allowed. Your message has ${wordCount} words.`
+      );
+      return;
+    }
+
     try {
       let recaptchaToken = "";
       if (isAvailable) {
@@ -188,6 +197,7 @@ export function ChatForm({
     isAvailable,
     enableWebSearch,
     enableOrderCheck,
+    textInput,
   ]);
 
   return (

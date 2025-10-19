@@ -24,12 +24,12 @@ export async function getChatById(id: string) {
   return chat.length > 0 ? chat[0] : null;
 }
 
-export async function getMessages(id: string, userId: string) {
+export async function getMessages(chatId: string, userId: string) {
   return await db
     .select()
     .from(Message)
     .innerJoin(Chat, eq(Message.chatId, Chat.id))
-    .where(and(eq(Message.chatId, id), eq(Chat.userId, userId)))
+    .where(and(eq(Message.chatId, chatId), eq(Chat.userId, userId)))
     .orderBy(asc(Message.createdAt));
 }
 

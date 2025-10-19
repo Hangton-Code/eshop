@@ -14,13 +14,15 @@ import { SparklesText } from "@/components/ui/sparkles-text";
 import { HyperText } from "@/components/ui/hyper-text";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { Button } from "@/components/ui/button";
-import { Store, ArrowRight } from "lucide-react";
+import { Store, ArrowRight, X } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function Home() {
   const { t } = useLanguage();
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   const [textInput, setTextInput] = useState("");
+  const [showBanner, setShowBanner] = useState(true);
 
   const [enableWebSearch, _setEnableWebSearch] = useState(true);
   const [enableOrderCheck, _setEnableOrderCheck] = useState(true);
@@ -29,6 +31,17 @@ export default function Home() {
   );
   const router = useRouter();
   const handleSubmit = async () => {
+    if (!textInput.trim()) return;
+
+    // Validate word count (max 5000 words)
+    const wordCount = textInput.trim().split(/\s+/).filter(Boolean).length;
+    if (wordCount > 5000) {
+      toast.error(
+        `Message is too long. Maximum 5000 words allowed. Your message has ${wordCount} words.`
+      );
+      return;
+    }
+
     const id = generateUUID();
     if (!id) return;
     router.push(
@@ -88,32 +101,47 @@ export default function Home() {
 
   return (
     <div className="relative h-full">
-      <div className="absolute top-15 left-0 right-0 z-10 w-full border-b bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-yellow-500/10 border-orange-300/50 dark:border-orange-700/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-orange-500/20">
-                <Store className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+      {showBanner && (
+        <div className="absolute top-15 left-0 right-0 z-10 w-full border-b bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-yellow-500/10 border-orange-300/50 dark:border-orange-700/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-full bg-orange-500/20">
+                  <Store className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm">
+                    {t("becomeMerchant")}
+                  </h3>
+                  <p className="text-xs text-muted-foreground hidden sm:block">
+                    {t("becomeMerchantDesc")}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-sm">{t("becomeMerchant")}</h3>
-                <p className="text-xs text-muted-foreground hidden sm:block">
-                  {t("becomeMerchantDesc")}
-                </p>
+              <div className="flex items-center gap-2">
+                <Link href="/cms">
+                  <Button
+                    size="sm"
+                    className="bg-orange-600 hover:bg-orange-700 text-white text-xs"
+                  >
+                    {t("visitCMS")}
+                    <ArrowRight className="ml-1.5 w-3 h-3" />
+                  </Button>
+                </Link>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setShowBanner(false)}
+                  aria-label="Dismiss banner"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
             </div>
-            <Link href="/cms">
-              <Button
-                size="sm"
-                className="bg-orange-600 hover:bg-orange-700 text-white text-xs"
-              >
-                {t("visitCMS")}
-                <ArrowRight className="ml-1.5 w-3 h-3" />
-              </Button>
-            </Link>
           </div>
         </div>
-      </div>
+      )}
 
       <div
         className={cn(
